@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E67CD9502AA9C56500F8BDCD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E67CD94F2AA9C56500F8BDCD /* GoogleService-Info.plist */; };
+		E67CD9532AA9C66300F8BDCD /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = E67CD9522AA9C66300F8BDCD /* FirebaseAuth */; };
 		E6DBF2CD2AA34099004A7B35 /* ExpensaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6DBF2CC2AA34099004A7B35 /* ExpensaApp.swift */; };
 		E6DBF2CF2AA34099004A7B35 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6DBF2CE2AA34099004A7B35 /* ContentView.swift */; };
 		E6DBF2D12AA3409A004A7B35 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E6DBF2D02AA3409A004A7B35 /* Assets.xcassets */; };
@@ -14,6 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E67CD94F2AA9C56500F8BDCD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E6DBF2C92AA34099004A7B35 /* Expensa.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Expensa.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E6DBF2CC2AA34099004A7B35 /* ExpensaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpensaApp.swift; sourceTree = "<group>"; };
 		E6DBF2CE2AA34099004A7B35 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -26,6 +29,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E67CD9532AA9C66300F8BDCD /* FirebaseAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -54,6 +58,7 @@
 				E6DBF2CC2AA34099004A7B35 /* ExpensaApp.swift */,
 				E6DBF2CE2AA34099004A7B35 /* ContentView.swift */,
 				E6DBF2D02AA3409A004A7B35 /* Assets.xcassets */,
+				E67CD94F2AA9C56500F8BDCD /* GoogleService-Info.plist */,
 				E6DBF2D22AA3409A004A7B35 /* Preview Content */,
 			);
 			path = Expensa;
@@ -83,6 +88,9 @@
 			dependencies = (
 			);
 			name = Expensa;
+			packageProductDependencies = (
+				E67CD9522AA9C66300F8BDCD /* FirebaseAuth */,
+			);
 			productName = Expensa;
 			productReference = E6DBF2C92AA34099004A7B35 /* Expensa.app */;
 			productType = "com.apple.product-type.application";
@@ -111,6 +119,9 @@
 				Base,
 			);
 			mainGroup = E6DBF2C02AA34099004A7B35;
+			packageReferences = (
+				E67CD9512AA9C66200F8BDCD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			productRefGroup = E6DBF2CA2AA34099004A7B35 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -127,6 +138,7 @@
 			files = (
 				E6DBF2D42AA3409A004A7B35 /* Preview Assets.xcassets in Resources */,
 				E6DBF2D12AA3409A004A7B35 /* Assets.xcassets in Resources */,
+				E67CD9502AA9C56500F8BDCD /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -337,6 +349,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		E67CD9512AA9C66200F8BDCD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E67CD9522AA9C66300F8BDCD /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E67CD9512AA9C66200F8BDCD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = E6DBF2C12AA34099004A7B35 /* Project object */;
 }

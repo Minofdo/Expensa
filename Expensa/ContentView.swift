@@ -10,7 +10,7 @@ import SwiftUI
 struct ContentView: View {
     
     @State private var loginSheetVisible = false
-    @State private var signupSheetVisible = false
+    @State private var signupSheetVisible = true
     
     var body: some View {
         // https://stackoverflow.com/a/60374737
@@ -53,7 +53,7 @@ struct ContentView: View {
                     .tint(.green)
                     .sheet(isPresented: $loginSheetVisible) {
                         LoginSheet()
-                            .presentationDetents([.large])
+                            .presentationDetents([.medium])
                             .presentationDragIndicator(.visible)
                     }
                     
@@ -75,7 +75,7 @@ struct ContentView: View {
                     .tint(.green)
                     .sheet(isPresented: $signupSheetVisible) {
                         SignupSheet()
-                            .presentationDetents([.large])
+                            .presentationDetents([.medium])
                             .presentationDragIndicator(.visible)
                     }
                 }
@@ -87,22 +87,190 @@ struct ContentView: View {
 }
 
 struct LoginSheet: View {
+    
+    @State var username: String = ""
+    @State var password: String = ""
+    
+    @State var usernameBorder: Color = .gray
+    @State var passwordBorder: Color = .gray
+    
     var body: some View {
-        Button("Press to dismiss") {
+        VStack {
+            Spacer()
+            
+            Text("Login to an existing account")
+                .font(.title2)
+            
+            Spacer()
+            
+            TextField("", text: $username, prompt: Text("Email").foregroundColor(.primary)
+            )
+            .textFieldStyle(.plain)
+            .keyboardType(.emailAddress)
+            .textInputAutocapitalization(.never)
+            .padding()
+            .cornerRadius(5)
+            .overlay(
+                RoundedRectangle(cornerRadius: 5)
+                    .stroke(usernameBorder, lineWidth: 1)
+            )
+            .padding(.horizontal, 30)
+            
+            SecureField("", text: $password, prompt: Text("Password").foregroundColor(.primary)
+            )
+            .textFieldStyle(.plain)
+            .padding()
+            .cornerRadius(5)
+            .overlay(
+                RoundedRectangle(cornerRadius: 5)
+                    .stroke(passwordBorder, lineWidth: 1)
+            )
+            .padding(.horizontal, 30)
+            .padding(.top, 1)
+            
+            Spacer()
+            
+            Button(
+                action: {
+                },
+                label: {
+                    Text("LOGIN")
+                        .font(.title2)
+                        .padding(.vertical, 5)
+                        .frame(maxWidth: .infinity)
+                        .bold()
+                }
+            )
+            .padding(.horizontal, 100)
+            .buttonStyle(.borderedProminent)
+            .tint(.green)
+            
+            Button(
+                action: {
+                },
+                label: {
+                    Text("cancel")
+                        .font(.title2)
+                        .padding(.vertical, 5)
+                }
+            )
+            .padding(.horizontal, 100)
+            .buttonStyle(.plain)
+            .foregroundColor(.blue)
+            .padding(.bottom, 5)
         }
-        .font(.title)
-        .padding()
-        .background(.black)
     }
 }
 
 struct SignupSheet: View {
+    @State var username: String = ""
+    @State var password: String = ""
+    @State var confirmPassword: String = ""
+    
+    @State var usernameBorder: Color = .gray
+    @State var passwordBorder: Color = .gray
+    @State var confirmPasswordBorder: Color = .gray
+    
     var body: some View {
-        Button("Press to dismiss") {
+        VStack {
+            Spacer()
+            
+            Text("Create a new account")
+                .font(.title2)
+            
+            Spacer()
+            
+            TextField("", text: $username, prompt: Text("Email").foregroundColor(.primary)
+            )
+            .textFieldStyle(.plain)
+            .keyboardType(.emailAddress)
+            .textInputAutocapitalization(.never)
+            .padding()
+            .cornerRadius(5)
+            .overlay(
+                RoundedRectangle(cornerRadius: 5)
+                    .stroke(usernameBorder, lineWidth: 1)
+            )
+            .padding(.horizontal, 30)
+            
+            SecureField("", text: $password, prompt: Text("Password").foregroundColor(.primary)
+            )
+            .textFieldStyle(.plain)
+            .padding()
+            .cornerRadius(5)
+            .overlay(
+                RoundedRectangle(cornerRadius: 5)
+                    .stroke(passwordBorder, lineWidth: 1)
+            )
+            .padding(.horizontal, 30)
+            .padding(.top, 1)
+            
+            SecureField("", text: $confirmPassword, prompt: Text("Confirm Password").foregroundColor(.primary)
+            )
+            .textFieldStyle(.plain)
+            .padding()
+            .cornerRadius(5)
+            .overlay(
+                RoundedRectangle(cornerRadius: 5)
+                    .stroke(confirmPasswordBorder, lineWidth: 1)
+            )
+            .padding(.horizontal, 30)
+            .padding(.top, 1)
+            
+            Spacer()
+            
+            Button(
+                action: {
+                    usernameBorder = .gray
+                    passwordBorder = .gray
+                    confirmPasswordBorder = .gray
+                    username = username.trimmingCharacters(in: .whitespacesAndNewlines)
+                    password = password.trimmingCharacters(in: .whitespacesAndNewlines)
+                    confirmPassword = confirmPassword.trimmingCharacters(in: .whitespacesAndNewlines)
+                    
+                    if (username == "") {
+                        usernameBorder = .red
+                    } else {
+                        let emailFormat = "[A-Z0-9a-z.-_]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,3}"
+                        let emailPredicate = NSPredicate(format:"SELF MATCHES %@", emailFormat)
+                        let valid = emailPredicate.evaluate(with: username)
+                        if (!valid) {
+                            usernameBorder = .red
+                        }
+                    }
+                    if (password == "") {
+                        passwordBorder = .red
+                    }
+                    if (confirmPassword == "") {
+                        confirmPasswordBorder = .red
+                    }
+                },
+                label: {
+                    Text("SIGNUP")
+                        .font(.title2)
+                        .padding(.vertical, 5)
+                        .frame(maxWidth: .infinity)
+                        .bold()
+                }
+            )
+            .padding(.horizontal, 100)
+            .buttonStyle(.borderedProminent)
+            .tint(.green)
+            
+            Button(
+                action: {
+                },
+                label: {
+                    Text("cancel")
+                        .font(.title2)
+                        .padding(.vertical, 5)
+                }
+            )
+            .padding(.horizontal, 100)
+            .buttonStyle(.plain)
+            .foregroundColor(.blue)
+            .padding(.bottom, 5)
         }
-        .font(.title)
-        .padding()
-        .background(.black)
     }
 }
 
