@@ -21,6 +21,7 @@ struct ContentView: View {
                 LoginView()
             }
         }
+        .environmentObject(userData)
         .onAppear {
             authStateListenerHandle = Auth.auth().addStateDidChangeListener() { (_, user) in
                 if user != nil {
@@ -35,7 +36,6 @@ struct ContentView: View {
                 Auth.auth().removeStateDidChangeListener(handle)
             }
         }
-        .environmentObject(userData)
     }
 }
 

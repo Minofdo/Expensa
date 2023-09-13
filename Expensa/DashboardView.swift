@@ -11,6 +11,11 @@ import Firebase
 struct DashboardView: View {
     
     @State var showLogout = false;
+    @EnvironmentObject var userData: UserData
+    
+    @State var showAlert = false
+    @State var messageBody = ""
+    @State var messageTitle = ""
     
     var body: some View {
         GeometryReader { geometry in
@@ -33,9 +38,9 @@ struct DashboardView: View {
                     .confirmationDialog("Change background", isPresented: $showLogout) {
                         Button("Log Out", role: .destructive) {
                             do {
-                              try Auth.auth().signOut()
+                                try Auth.auth().signOut()
                             } catch let signOutError as NSError {
-                              print("Error signing out: %@", signOutError)
+                                print("Error signing out: %@", signOutError)
                             }
                         }
                         Button("Cancel", role: .cancel) { }
@@ -43,6 +48,23 @@ struct DashboardView: View {
                         Text("Are you sure to log out?")
                     }
                 }
+            }
+            .onAppear {
+                if let firstLogin = userData.isFirstLogin {
+                    if (firstLogin) {
+                        messageTitle = "Welcome"
+                        messageBody = "Welcome to Expensa. Start your journey by creating a budget."
+                    } else {
+                        messageTitle = "Welcome Back!"
+                        messageBody = "Welcome back to Expensa. Don't forget to add your daily expenses."
+                    }
+                    DispatchQueue.main.async {
+                        showAlert = true 
+                    }
+                }
+            }
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text(messageTitle), message: Text(messageBody), dismissButton: .default(Text("Let's GO!")))
             }
         }
     }

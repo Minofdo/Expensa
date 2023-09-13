@@ -9,4 +9,5 @@ import Foundation
 
 class UserData: ObservableObject {
     @Published var email :String?
+    @Published var isFirstLogin :Bool?
 }

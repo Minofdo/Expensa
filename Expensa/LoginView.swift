@@ -99,6 +99,8 @@ struct LoginSheet: View {
     @State var messageBody = ""
     @State var messageTitle = ""
     
+    @EnvironmentObject var userData: UserData
+    
     @Environment(\.dismiss) var dismiss
     
     
@@ -165,8 +167,7 @@ struct LoginSheet: View {
                     if (usernameBorder != .red && passwordBorder != .red) {
                         Auth.auth().signIn(withEmail: username, password: password) { (_, error) in
                             if let error = error {
-                                print(error._code)
-                                if (error._code == 17009) {
+                                if (error._code == 17009 || error._code == 17011) {
                                     messageTitle = "ERROR"
                                     messageBody = "Username or Password is incorrect. Please try again."
                                     showAlert = true;
@@ -176,6 +177,7 @@ struct LoginSheet: View {
                                     showAlert = true;
                                 }
                             } else {
+                                userData.isFirstLogin = false;
                                 dismiss()
                             }
                         }
@@ -226,6 +228,8 @@ struct SignupSheet: View {
     @State var showAlert = false
     @State var messageBody = ""
     @State var messageTitle = ""
+    
+    @EnvironmentObject var userData: UserData
     
     @Environment(\.dismiss) var dismiss
     
@@ -317,7 +321,6 @@ struct SignupSheet: View {
                     if (usernameBorder != .red && passwordBorder != .red && confirmPasswordBorder != .red) {
                         Auth.auth().createUser(withEmail: username, password: password) { (_, error) in
                             if let error = error {
-                                print(error._code)
                                 if (error._code == 17007) {
                                     messageTitle = "ERROR"
                                     messageBody = "Account already exist. Please login."
@@ -328,6 +331,7 @@ struct SignupSheet: View {
                                     showAlert = true;
                                 }
                             } else {
+                                userData.isFirstLogin = true;
                                 dismiss()
                                 // messageTitle = "ACCOUNT CREATED"
                                 // messageBody = "Account created successfully. Please login."
