@@ -6,12 +6,9 @@
 //
 
 import SwiftUI
-import FirebaseCore
+import Firebase
 
 class AppDelegate: NSObject, UIApplicationDelegate {
-    
-    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         FirebaseApp.configure()
@@ -21,6 +18,9 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
 @main
 struct ExpensaApp: App {
+    
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    
     var body: some Scene {
         WindowGroup {
             ContentView()

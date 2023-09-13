@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		E67CD9502AA9C56500F8BDCD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E67CD94F2AA9C56500F8BDCD /* GoogleService-Info.plist */; };
 		E67CD9532AA9C66300F8BDCD /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = E67CD9522AA9C66300F8BDCD /* FirebaseAuth */; };
+		E6CB8C9F2AB1CA5700C302D5 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6CB8C9E2AB1CA5700C302D5 /* LoginView.swift */; };
+		E6CB8CA42AB1D6F600C302D5 /* UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6CB8CA32AB1D6F600C302D5 /* UserData.swift */; };
+		E6CB8CA62AB1D86000C302D5 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6CB8CA52AB1D86000C302D5 /* DashboardView.swift */; };
 		E6DBF2CD2AA34099004A7B35 /* ExpensaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6DBF2CC2AA34099004A7B35 /* ExpensaApp.swift */; };
 		E6DBF2CF2AA34099004A7B35 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6DBF2CE2AA34099004A7B35 /* ContentView.swift */; };
 		E6DBF2D12AA3409A004A7B35 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E6DBF2D02AA3409A004A7B35 /* Assets.xcassets */; };
@@ -17,6 +20,9 @@
 
 /* Begin PBXFileReference section */
 		E67CD94F2AA9C56500F8BDCD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		E6CB8C9E2AB1CA5700C302D5 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		E6CB8CA32AB1D6F600C302D5 /* UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserData.swift; sourceTree = "<group>"; };
+		E6CB8CA52AB1D86000C302D5 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		E6DBF2C92AA34099004A7B35 /* Expensa.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Expensa.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E6DBF2CC2AA34099004A7B35 /* ExpensaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpensaApp.swift; sourceTree = "<group>"; };
 		E6DBF2CE2AA34099004A7B35 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -36,6 +42,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E6CB8CA22AB1D6A800C302D5 /* model */ = {
+			isa = PBXGroup;
+			children = (
+				E6CB8CA32AB1D6F600C302D5 /* UserData.swift */,
+			);
+			path = model;
+			sourceTree = "<group>";
+		};
 		E6DBF2C02AA34099004A7B35 = {
 			isa = PBXGroup;
 			children = (
@@ -55,11 +69,14 @@
 		E6DBF2CB2AA34099004A7B35 /* Expensa */ = {
 			isa = PBXGroup;
 			children = (
+				E6CB8CA22AB1D6A800C302D5 /* model */,
 				E6DBF2CC2AA34099004A7B35 /* ExpensaApp.swift */,
 				E6DBF2CE2AA34099004A7B35 /* ContentView.swift */,
 				E6DBF2D02AA3409A004A7B35 /* Assets.xcassets */,
 				E67CD94F2AA9C56500F8BDCD /* GoogleService-Info.plist */,
 				E6DBF2D22AA3409A004A7B35 /* Preview Content */,
+				E6CB8C9E2AB1CA5700C302D5 /* LoginView.swift */,
+				E6CB8CA52AB1D86000C302D5 /* DashboardView.swift */,
 			);
 			path = Expensa;
 			sourceTree = "<group>";
@@ -149,7 +166,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E6CB8C9F2AB1CA5700C302D5 /* LoginView.swift in Sources */,
 				E6DBF2CF2AA34099004A7B35 /* ContentView.swift in Sources */,
+				E6CB8CA62AB1D86000C302D5 /* DashboardView.swift in Sources */,
+				E6CB8CA42AB1D6F600C302D5 /* UserData.swift in Sources */,
 				E6DBF2CD2AA34099004A7B35 /* ExpensaApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
