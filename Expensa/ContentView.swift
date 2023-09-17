@@ -26,6 +26,7 @@ struct ContentView: View {
             authStateListenerHandle = Auth.auth().addStateDidChangeListener() { (_, user) in
                 if user != nil {
                     userData.email = user?.email
+                    userData.loadDataForUser()
                 } else {
                     userData.email = nil
                 }

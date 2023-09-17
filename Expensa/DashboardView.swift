@@ -64,7 +64,9 @@ struct DashboardView: View {
                 }
             }
             .alert(isPresented: $showAlert) {
-                Alert(title: Text(messageTitle), message: Text(messageBody), dismissButton: .default(Text("Let's GO!")))
+                Alert(title: Text(messageTitle), message: Text(messageBody), dismissButton: .default(Text("Let's GO!")) {
+                    print("HERE")
+                })
             }
         }
     }

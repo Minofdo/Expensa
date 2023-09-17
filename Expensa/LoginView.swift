@@ -333,9 +333,6 @@ struct SignupSheet: View {
                             } else {
                                 userData.isFirstLogin = true;
                                 dismiss()
-                                // messageTitle = "ACCOUNT CREATED"
-                                // messageBody = "Account created successfully. Please login."
-                                // showAlert = true;
                             }
                         }
                     }
