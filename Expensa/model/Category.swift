@@ -19,11 +19,12 @@ struct Categories {
     
     init() {
         self.categories = [
-            Category(id: "", label: "", colour: .black),
-            Category(id: "", label: "", colour: .black),
-            Category(id: "", label: "", colour: .black),
-            Category(id: "", label: "", colour: .black),
-            Category(id: "", label: "", colour: .black)
+            Category(id: "savings", label: "Savings", colour: .green),
+            Category(id: "entertainment", label: "Entertainment", colour: .pink),
+            Category(id: "food", label: "Food & Beverage", colour: .teal),
+            Category(id: "travel", label: "Travel", colour: .brown),
+            Category(id: "maintenance", label: "Maintenance", colour: .indigo),
+            Category(id: "other", label: "Other Expense", colour: .orange)
         ]
     }
     

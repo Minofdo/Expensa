@@ -16,7 +16,7 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             if (userData.email != nil && userData.email?.trimmingCharacters(in: .whitespacesAndNewlines) != "") {
-                DashboardView()
+                SetBudgetView()
             } else {
                 LoginView()
             }

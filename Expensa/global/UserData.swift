@@ -40,7 +40,6 @@ class UserData: ObservableObject {
     }
     
     func makeEmailFireStoreSafe(_ email: String) -> String {
-        let originalString = "example.email@example.com"
         let replacements = [".", "#", "$", "[", "]"]
         var result = email
         for replaceChar in replacements {

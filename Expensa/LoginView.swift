@@ -10,8 +10,7 @@ import Firebase
 
 struct LoginView: View {
     
-    @State private var loginSheetVisible = false
-    @State private var signupSheetVisible = false
+    @ObservedObject var loginViewModel = LoginViewModel()
     
     var body: some View {
         // https://stackoverflow.com/a/60374737
@@ -38,7 +37,7 @@ struct LoginView: View {
                     
                     Button(
                         action: {
-                            loginSheetVisible.toggle()
+                            loginViewModel.loginSheetVisible.toggle()
                         },
                         label: {
                             Text("LOGIN")
@@ -52,7 +51,7 @@ struct LoginView: View {
                     .padding(.top, 20)
                     .buttonStyle(.borderedProminent)
                     .tint(.green)
-                    .sheet(isPresented: $loginSheetVisible) {
+                    .sheet(isPresented: $loginViewModel.loginSheetVisible) {
                         LoginSheet()
                             .presentationDetents([.medium])
                             .presentationDragIndicator(.visible)
@@ -60,7 +59,7 @@ struct LoginView: View {
                     
                     Button(
                         action: {
-                            signupSheetVisible.toggle()
+                            loginViewModel.signupSheetVisible.toggle()
                         },
                         label: {
                             Text("SIGN UP")
@@ -74,7 +73,7 @@ struct LoginView: View {
                     .padding(.vertical, 10)
                     .buttonStyle(.bordered)
                     .tint(.green)
-                    .sheet(isPresented: $signupSheetVisible) {
+                    .sheet(isPresented: $loginViewModel.signupSheetVisible) {
                         SignupSheet()
                             .presentationDetents([.medium])
                             .presentationDragIndicator(.visible)
@@ -89,19 +88,11 @@ struct LoginView: View {
 
 struct LoginSheet: View {
     
-    @State var username: String = ""
-    @State var password: String = ""
-    
-    @State var usernameBorder: Color = .gray
-    @State var passwordBorder: Color = .gray
-    
-    @State var showAlert = false
-    @State var messageBody = ""
-    @State var messageTitle = ""
-    
     @EnvironmentObject var userData: UserData
     
     @Environment(\.dismiss) var dismiss
+    
+    @ObservedObject var loginViewModel = LoginViewModel()
     
     
     var body: some View {
@@ -113,7 +104,7 @@ struct LoginSheet: View {
             
             Spacer()
             
-            TextField("", text: $username, prompt: Text("Email").foregroundColor(.primary)
+            TextField("", text: $loginViewModel.username, prompt: Text("Email").foregroundColor(.primary)
             )
             .textFieldStyle(.plain)
             .keyboardType(.emailAddress)
@@ -123,18 +114,18 @@ struct LoginSheet: View {
             .cornerRadius(5)
             .overlay(
                 RoundedRectangle(cornerRadius: 5)
-                    .stroke(usernameBorder, lineWidth: 1)
+                    .stroke(loginViewModel.usernameBorder, lineWidth: 1)
             )
             .padding(.horizontal, 30)
             
-            SecureField("", text: $password, prompt: Text("Password").foregroundColor(.primary)
+            SecureField("", text: $loginViewModel.password, prompt: Text("Password").foregroundColor(.primary)
             )
             .textFieldStyle(.plain)
             .padding()
             .cornerRadius(5)
             .overlay(
                 RoundedRectangle(cornerRadius: 5)
-                    .stroke(passwordBorder, lineWidth: 1)
+                    .stroke(loginViewModel.passwordBorder, lineWidth: 1)
             )
             .padding(.horizontal, 30)
             .padding(.top, 1)
@@ -143,38 +134,38 @@ struct LoginSheet: View {
             
             Button(
                 action: {
-                    usernameBorder = .gray
-                    passwordBorder = .gray
-                    username = username.trimmingCharacters(in: .whitespacesAndNewlines)
-                    password = password.trimmingCharacters(in: .whitespacesAndNewlines)
+                    loginViewModel.usernameBorder = .gray
+                    loginViewModel.passwordBorder = .gray
+                    loginViewModel.username = loginViewModel.username.trimmingCharacters(in: .whitespacesAndNewlines)
+                    loginViewModel.password = loginViewModel.password.trimmingCharacters(in: .whitespacesAndNewlines)
                     
-                    if (username == "") {
-                        usernameBorder = .red
+                    if (loginViewModel.username == "") {
+                        loginViewModel.usernameBorder = .red
                     } else {
                         let emailFormat = "[A-Z0-9a-z.-_]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,3}"
                         let emailPredicate = NSPredicate(format:"SELF MATCHES %@", emailFormat)
-                        let valid = emailPredicate.evaluate(with: username)
+                        let valid = emailPredicate.evaluate(with: loginViewModel.username)
                         if (!valid) {
-                            usernameBorder = .red
-                            messageTitle = "Invalid Email"
-                            messageBody = "Email format is invalid. Please check and try again."
-                            showAlert = true
+                            loginViewModel.usernameBorder = .red
+                            loginViewModel.messageTitle = "Invalid Email"
+                            loginViewModel.messageBody = "Email format is invalid. Please check and try again."
+                            loginViewModel.showAlert = true
                         }
                     }
-                    if (password == "") {
-                        passwordBorder = .red
+                    if (loginViewModel.password == "") {
+                        loginViewModel.passwordBorder = .red
                     }
-                    if (usernameBorder != .red && passwordBorder != .red) {
-                        Auth.auth().signIn(withEmail: username, password: password) { (_, error) in
+                    if (loginViewModel.usernameBorder != .red && loginViewModel.passwordBorder != .red) {
+                        Auth.auth().signIn(withEmail: loginViewModel.username, password: loginViewModel.password) { (_, error) in
                             if let error = error {
                                 if (error._code == 17009 || error._code == 17011) {
-                                    messageTitle = "ERROR"
-                                    messageBody = "Username or Password is incorrect. Please try again."
-                                    showAlert = true;
+                                    loginViewModel.messageTitle = "ERROR"
+                                    loginViewModel.messageBody = "Username or Password is incorrect. Please try again."
+                                    loginViewModel.showAlert = true;
                                 } else {
-                                    messageTitle = "ERROR"
-                                    messageBody = error.localizedDescription
-                                    showAlert = true;
+                                    loginViewModel.messageTitle = "ERROR"
+                                    loginViewModel.messageBody = error.localizedDescription
+                                    loginViewModel.showAlert = true;
                                 }
                             } else {
                                 userData.isFirstLogin = false;
@@ -194,8 +185,8 @@ struct LoginSheet: View {
             .padding(.horizontal, 100)
             .buttonStyle(.borderedProminent)
             .tint(.green)
-            .alert(isPresented: $showAlert) {
-                Alert(title: Text(messageTitle), message: Text(messageBody), dismissButton: .default(Text("OK")))
+            .alert(isPresented: $loginViewModel.showAlert) {
+                Alert(title: Text(loginViewModel.messageTitle), message: Text(loginViewModel.messageBody), dismissButton: .default(Text("OK")))
             }
             
             Button(
@@ -217,21 +208,12 @@ struct LoginSheet: View {
 }
 
 struct SignupSheet: View {
-    @State var username: String = ""
-    @State var password: String = ""
-    @State var confirmPassword: String = ""
-    
-    @State var usernameBorder: Color = .gray
-    @State var passwordBorder: Color = .gray
-    @State var confirmPasswordBorder: Color = .gray
-    
-    @State var showAlert = false
-    @State var messageBody = ""
-    @State var messageTitle = ""
     
     @EnvironmentObject var userData: UserData
     
     @Environment(\.dismiss) var dismiss
+    
+    @ObservedObject var loginViewModel = LoginViewModel()
     
     
     var body: some View {
@@ -243,7 +225,7 @@ struct SignupSheet: View {
             
             Spacer()
             
-            TextField("", text: $username, prompt: Text("Email").foregroundColor(.primary)
+            TextField("", text: $loginViewModel.username, prompt: Text("Email").foregroundColor(.primary)
             )
             .textFieldStyle(.plain)
             .keyboardType(.emailAddress)
@@ -253,30 +235,30 @@ struct SignupSheet: View {
             .cornerRadius(5)
             .overlay(
                 RoundedRectangle(cornerRadius: 5)
-                    .stroke(usernameBorder, lineWidth: 1)
+                    .stroke(loginViewModel.usernameBorder, lineWidth: 1)
             )
             .padding(.horizontal, 30)
             
-            SecureField("", text: $password, prompt: Text("Password").foregroundColor(.primary)
+            SecureField("", text: $loginViewModel.password, prompt: Text("Password").foregroundColor(.primary)
             )
             .textFieldStyle(.plain)
             .padding()
             .cornerRadius(5)
             .overlay(
                 RoundedRectangle(cornerRadius: 5)
-                    .stroke(passwordBorder, lineWidth: 1)
+                    .stroke(loginViewModel.passwordBorder, lineWidth: 1)
             )
             .padding(.horizontal, 30)
             .padding(.top, 1)
             
-            SecureField("", text: $confirmPassword, prompt: Text("Confirm Password").foregroundColor(.primary)
+            SecureField("", text: $loginViewModel.confirmPassword, prompt: Text("Confirm Password").foregroundColor(.primary)
             )
             .textFieldStyle(.plain)
             .padding()
             .cornerRadius(5)
             .overlay(
                 RoundedRectangle(cornerRadius: 5)
-                    .stroke(confirmPasswordBorder, lineWidth: 1)
+                    .stroke(loginViewModel.confirmPasswordBorder, lineWidth: 1)
             )
             .padding(.horizontal, 30)
             .padding(.top, 1)
@@ -285,50 +267,50 @@ struct SignupSheet: View {
             
             Button(
                 action: {
-                    usernameBorder = .gray
-                    passwordBorder = .gray
-                    confirmPasswordBorder = .gray
-                    username = username.trimmingCharacters(in: .whitespacesAndNewlines)
-                    password = password.trimmingCharacters(in: .whitespacesAndNewlines)
-                    confirmPassword = confirmPassword.trimmingCharacters(in: .whitespacesAndNewlines)
+                    loginViewModel.usernameBorder = .gray
+                    loginViewModel.passwordBorder = .gray
+                    loginViewModel.confirmPasswordBorder = .gray
+                    loginViewModel.username = loginViewModel.username.trimmingCharacters(in: .whitespacesAndNewlines)
+                    loginViewModel.password = loginViewModel.password.trimmingCharacters(in: .whitespacesAndNewlines)
+                    loginViewModel.confirmPassword = loginViewModel.confirmPassword.trimmingCharacters(in: .whitespacesAndNewlines)
                     
-                    if (username == "") {
-                        usernameBorder = .red
+                    if (loginViewModel.username == "") {
+                        loginViewModel.usernameBorder = .red
                     } else {
                         let emailFormat = "[A-Z0-9a-z.-_]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,3}"
                         let emailPredicate = NSPredicate(format:"SELF MATCHES %@", emailFormat)
-                        let valid = emailPredicate.evaluate(with: username)
+                        let valid = emailPredicate.evaluate(with: loginViewModel.username)
                         if (!valid) {
-                            usernameBorder = .red
-                            messageTitle = "Invalid Email"
-                            messageBody = "Email format is invalid. Please check and try again."
-                            showAlert = true
+                            loginViewModel.usernameBorder = .red
+                            loginViewModel.messageTitle = "Invalid Email"
+                            loginViewModel.messageBody = "Email format is invalid. Please check and try again."
+                            loginViewModel.showAlert = true
                         }
                     }
-                    if (password == "") {
-                        passwordBorder = .red
+                    if (loginViewModel.password == "") {
+                        loginViewModel.passwordBorder = .red
                     }
-                    if (confirmPassword == "") {
-                        confirmPasswordBorder = .red
+                    if (loginViewModel.confirmPassword == "") {
+                        loginViewModel.confirmPasswordBorder = .red
                     }
-                    if (password != "" && password != confirmPassword) {
-                        passwordBorder = .red
-                        confirmPasswordBorder = .red
-                        messageTitle = "Password Mismatch"
-                        messageBody = "Password and Confirm Password fields doesn't match. Please renter both passwords and try again."
-                        showAlert = true
+                    if (loginViewModel.password != "" && loginViewModel.password != loginViewModel.confirmPassword) {
+                        loginViewModel.passwordBorder = .red
+                        loginViewModel.confirmPasswordBorder = .red
+                        loginViewModel.messageTitle = "Password Mismatch"
+                        loginViewModel.messageBody = "Password and Confirm Password fields doesn't match. Please renter both passwords and try again."
+                        loginViewModel.showAlert = true
                     }
-                    if (usernameBorder != .red && passwordBorder != .red && confirmPasswordBorder != .red) {
-                        Auth.auth().createUser(withEmail: username, password: password) { (_, error) in
+                    if (loginViewModel.usernameBorder != .red && loginViewModel.passwordBorder != .red && loginViewModel.confirmPasswordBorder != .red) {
+                        Auth.auth().createUser(withEmail: loginViewModel.username, password: loginViewModel.password) { (_, error) in
                             if let error = error {
                                 if (error._code == 17007) {
-                                    messageTitle = "ERROR"
-                                    messageBody = "Account already exist. Please login."
-                                    showAlert = true;
+                                    loginViewModel.messageTitle = "ERROR"
+                                    loginViewModel.messageBody = "Account already exist. Please login."
+                                    loginViewModel.showAlert = true;
                                 } else {
-                                    messageTitle = "ERROR"
-                                    messageBody = error.localizedDescription
-                                    showAlert = true;
+                                    loginViewModel.messageTitle = "ERROR"
+                                    loginViewModel.messageBody = error.localizedDescription
+                                    loginViewModel.showAlert = true;
                                 }
                             } else {
                                 userData.isFirstLogin = true;
@@ -348,8 +330,8 @@ struct SignupSheet: View {
             .padding(.horizontal, 100)
             .buttonStyle(.borderedProminent)
             .tint(.green)
-            .alert(isPresented: $showAlert) {
-                Alert(title: Text(messageTitle), message: Text(messageBody), dismissButton: .default(Text("OK")))
+            .alert(isPresented: $loginViewModel.showAlert) {
+                Alert(title: Text(loginViewModel.messageTitle), message: Text(loginViewModel.messageBody), dismissButton: .default(Text("OK")))
             }
             
             Button(
