@@ -9,6 +9,8 @@ import SwiftUI
 
 struct SetBudgetView: View {
     
+    @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var userData: UserData
     @ObservedObject var budgetViewModel = SetBudgetViewModel()
     
     var categories = Categories()
@@ -19,18 +21,19 @@ struct SetBudgetView: View {
             HStack{
                 Spacer()
                 VStack {
-                    Text("BALANCE")
+                    Text("MONTHLY BALANCE")
                         .font(.title2)
                     HStack {
                         Text("LKR")
                             .font(.title)
-                        Text("0.00")
+                        Text(String(format: "%.2f", budgetViewModel.balance))
                             .font(.largeTitle)
                             .fontWeight(.bold)
                     }
                     .padding(.top, 1)
                     .padding(.bottom, 2)
-                    Text("entered values will get reflected here")
+                    Text("Entered values will get reflected here. You can continue with a negative value")
+                        .multilineTextAlignment(.center)
                         .font(.callout)
                 }
                 Spacer()
@@ -61,135 +64,213 @@ struct SetBudgetView: View {
             })
             
             Section(header: Text("Budget"), content: {
-                HStack{
-                    Text("Savings")
-                    Spacer()
-                    HStack {
-                        Text("LKR")
-                            .fixedSize()
-                        TextField("Amount", text: $budgetViewModel.savings)
-                            .multilineTextAlignment(.trailing)
-                            .textFieldStyle(.plain)
-                            .keyboardType(.decimalPad)
-                            .textInputAutocapitalization(.never)
-                            .autocorrectionDisabled()
-                            .frame(width: 90, alignment: .trailing)
+                VStack {
+                    Picker("", selection: $budgetViewModel.savingsPeriod) {
+                        Text("Weekly Allowance")
+                            .tag("W")
+                        Text("Monthly Allowance")
+                            .tag("M")
                     }
-                    .padding(.all, 10)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 3)
-                            .stroke(.gray, lineWidth: 1)
-                    )
+                    .labelsHidden()
+                    .pickerStyle(.segmented)
+                    .padding(.top, 5)
+                    .padding(.leading, -3)
+                    HStack{
+                        Text("Savings")
+                        Spacer()
+                        HStack {
+                            Text("LKR")
+                                .fixedSize()
+                            TextField("Amount", text: $budgetViewModel.savings)
+                                .multilineTextAlignment(.trailing)
+                                .textFieldStyle(.plain)
+                                .keyboardType(.decimalPad)
+                                .textInputAutocapitalization(.never)
+                                .autocorrectionDisabled()
+                                .frame(width: 90, alignment: .trailing)
+                        }
+                        .padding(.all, 10)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 3)
+                                .stroke(.gray, lineWidth: 1)
+                        )
+                    }
                 }
                 
-                HStack{
-                    Text("Entertainment")
-                    Spacer()
-                    HStack {
-                        Text("LKR")
-                            .fixedSize()
-                        TextField("Amount", text: $budgetViewModel.entertainment)
-                            .multilineTextAlignment(.trailing)
-                            .textFieldStyle(.plain)
-                            .keyboardType(.decimalPad)
-                            .textInputAutocapitalization(.never)
-                            .autocorrectionDisabled()
-                            .frame(width: 90, alignment: .trailing)
+                VStack {
+                    Picker("", selection: $budgetViewModel.entertainmentPeriod) {
+                        Text("Weekly Allowance")
+                            .tag("W")
+                        Text("Monthly Allowance")
+                            .tag("M")
                     }
-                    .padding(.all, 10)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 3)
-                            .stroke(.gray, lineWidth: 1)
-                    )
+                    .labelsHidden()
+                    .pickerStyle(.segmented)
+                    .padding(.top, 5)
+                    .padding(.leading, -3)
+                    HStack{
+                        Text("Entertainment")
+                        Spacer()
+                        HStack {
+                            Text("LKR")
+                                .fixedSize()
+                            TextField("Amount", text: $budgetViewModel.entertainment)
+                                .multilineTextAlignment(.trailing)
+                                .textFieldStyle(.plain)
+                                .keyboardType(.decimalPad)
+                                .textInputAutocapitalization(.never)
+                                .autocorrectionDisabled()
+                                .frame(width: 90, alignment: .trailing)
+                        }
+                        .padding(.all, 10)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 3)
+                                .stroke(.gray, lineWidth: 1)
+                        )
+                    }
+                }
+                VStack {
+                    Picker("", selection: $budgetViewModel.foodPeriod) {
+                        Text("Weekly Allowance")
+                            .tag("W")
+                        Text("Monthly Allowance")
+                            .tag("M")
+                    }
+                    .labelsHidden()
+                    .pickerStyle(.segmented)
+                    .padding(.top, 5)
+                    .padding(.leading, -3)
+                    HStack{
+                        Text("Food & Beverage")
+                        Spacer()
+                        HStack {
+                            Text("LKR")
+                                .fixedSize()
+                            TextField("Amount", text: $budgetViewModel.food)
+                                .multilineTextAlignment(.trailing)
+                                .textFieldStyle(.plain)
+                                .keyboardType(.decimalPad)
+                                .textInputAutocapitalization(.never)
+                                .autocorrectionDisabled()
+                                .frame(width: 90, alignment: .trailing)
+                        }
+                        .padding(.all, 10)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 3)
+                                .stroke(.gray, lineWidth: 1)
+                        )
+                    }
                 }
                 
-                HStack{
-                    Text("Food & Beverage")
-                    Spacer()
-                    HStack {
-                        Text("LKR")
-                            .fixedSize()
-                        TextField("Amount", text: $budgetViewModel.food)
-                            .multilineTextAlignment(.trailing)
-                            .textFieldStyle(.plain)
-                            .keyboardType(.decimalPad)
-                            .textInputAutocapitalization(.never)
-                            .autocorrectionDisabled()
-                            .frame(width: 90, alignment: .trailing)
+                VStack {
+                    Picker("", selection: $budgetViewModel.travelPeriod) {
+                        Text("Weekly Allowance")
+                            .tag("W")
+                        Text("Monthly Allowance")
+                            .tag("M")
                     }
-                    .padding(.all, 10)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 3)
-                            .stroke(.gray, lineWidth: 1)
-                    )
+                    .labelsHidden()
+                    .pickerStyle(.segmented)
+                    .padding(.top, 5)
+                    .padding(.leading, -3)
+                    HStack{
+                        Text("Travel")
+                        Spacer()
+                        HStack {
+                            Text("LKR")
+                                .fixedSize()
+                            TextField("Amount", text: $budgetViewModel.travel)
+                                .multilineTextAlignment(.trailing)
+                                .textFieldStyle(.plain)
+                                .keyboardType(.decimalPad)
+                                .textInputAutocapitalization(.never)
+                                .autocorrectionDisabled()
+                                .frame(width: 90, alignment: .trailing)
+                        }
+                        .padding(.all, 10)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 3)
+                                .stroke(.gray, lineWidth: 1)
+                        )
+                    }
                 }
                 
-                HStack{
-                    Text("Travel")
-                    Spacer()
-                    HStack {
-                        Text("LKR")
-                            .fixedSize()
-                        TextField("Amount", text: $budgetViewModel.travel)
-                            .multilineTextAlignment(.trailing)
-                            .textFieldStyle(.plain)
-                            .keyboardType(.decimalPad)
-                            .textInputAutocapitalization(.never)
-                            .autocorrectionDisabled()
-                            .frame(width: 90, alignment: .trailing)
+                VStack {
+                    Picker("", selection: $budgetViewModel.maintenancePeriod) {
+                        Text("Weekly Allowance")
+                            .tag("W")
+                        Text("Monthly Allowance")
+                            .tag("M")
                     }
-                    .padding(.all, 10)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 3)
-                            .stroke(.gray, lineWidth: 1)
-                    )
+                    .labelsHidden()
+                    .pickerStyle(.segmented)
+                    .padding(.top, 5)
+                    .padding(.leading, -3)
+                    HStack{
+                        Text("Maintenance")
+                        Spacer()
+                        HStack {
+                            Text("LKR")
+                                .fixedSize()
+                            TextField("Amount", text: $budgetViewModel.maintenance)
+                                .multilineTextAlignment(.trailing)
+                                .textFieldStyle(.plain)
+                                .keyboardType(.decimalPad)
+                                .textInputAutocapitalization(.never)
+                                .autocorrectionDisabled()
+                                .frame(width: 90, alignment: .trailing)
+                        }
+                        .padding(.all, 10)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 3)
+                                .stroke(.gray, lineWidth: 1)
+                        )
+                    }
                 }
                 
-                HStack{
-                    Text("Maintenance")
-                    Spacer()
-                    HStack {
-                        Text("LKR")
-                            .fixedSize()
-                        TextField("Amount", text: $budgetViewModel.maintenance)
-                            .multilineTextAlignment(.trailing)
-                            .textFieldStyle(.plain)
-                            .keyboardType(.decimalPad)
-                            .textInputAutocapitalization(.never)
-                            .autocorrectionDisabled()
-                            .frame(width: 90, alignment: .trailing)
+                VStack {
+                    Picker("", selection: $budgetViewModel.otherPeriod) {
+                        Text("Weekly Allowance")
+                            .tag("W")
+                        Text("Monthly Allowance")
+                            .tag("M")
                     }
-                    .padding(.all, 10)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 3)
-                            .stroke(.gray, lineWidth: 1)
-                    )
-                }
-                
-                HStack{
-                    Text("Other Expense")
-                    Spacer()
-                    HStack {
-                        Text("LKR")
-                            .fixedSize()
-                        TextField("Amount", text: $budgetViewModel.other)
-                            .multilineTextAlignment(.trailing)
-                            .textFieldStyle(.plain)
-                            .keyboardType(.decimalPad)
-                            .textInputAutocapitalization(.never)
-                            .autocorrectionDisabled()
-                            .frame(width: 90, alignment: .trailing)
+                    .labelsHidden()
+                    .pickerStyle(.segmented)
+                    .padding(.top, 5)
+                    .padding(.leading, -3)
+                    HStack{
+                        Text("Other Expense")
+                        Spacer()
+                        HStack {
+                            Text("LKR")
+                                .fixedSize()
+                            TextField("Amount", text: $budgetViewModel.other)
+                                .multilineTextAlignment(.trailing)
+                                .textFieldStyle(.plain)
+                                .keyboardType(.decimalPad)
+                                .textInputAutocapitalization(.never)
+                                .autocorrectionDisabled()
+                                .frame(width: 90, alignment: .trailing)
+                        }
+                        .padding(.all, 10)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 3)
+                                .stroke(.gray, lineWidth: 1)
+                        )
                     }
-                    .padding(.all, 10)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 3)
-                            .stroke(.gray, lineWidth: 1)
-                    )
                 }
             })
             
             Button(
                 action: {
+                    Task {
+                        userData.isLoadingData = true
+                        await budgetViewModel.saveBasicBudgetDetails(userData.email) { () in
+                            userData.isLoadingData = false
+                            dismiss()
+                        }
+                    }
                 },
                 label: {
                     Text("SAVE")
@@ -203,8 +284,15 @@ struct SetBudgetView: View {
             .tint(.green)
             .listRowBackground(Color.clear)
             .padding(.horizontal, 50)
+            .alert(isPresented: $budgetViewModel.showAlert) {
+                Alert(title: Text(budgetViewModel.messageTitle), message: Text(budgetViewModel.messageBody), dismissButton: .default(Text("OK")))
+            }
         }
         .navigationBarTitle("Set-UP", displayMode: .large)
+        .interactiveDismissDisabled()
+        .overlay(
+            userData.isLoadingData ? LoadingView() : nil
+        )
     }
 }
 

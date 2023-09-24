@@ -14,19 +14,31 @@ struct ContentView: View {
     @StateObject var userData = UserData()
     
     var body: some View {
+        // https://roddy.io/2020/07/27/create-progressview-modal-in-swiftui/
         NavigationView {
             if (userData.email != nil && userData.email?.trimmingCharacters(in: .whitespacesAndNewlines) != "") {
-                SetBudgetView()
+                DashboardView()
             } else {
                 LoginView()
+                    .overlay(
+                        userData.isLoadingData ? LoadingView() : nil
+                    )
             }
         }
         .environmentObject(userData)
         .onAppear {
             authStateListenerHandle = Auth.auth().addStateDidChangeListener() { (_, user) in
-                if user != nil {
-                    userData.email = user?.email
-                    userData.loadDataForUser()
+                if let email = user?.email {
+                    Task {
+                        do {
+                            userData.isLoadingData = true
+                            try await userData.loadDataForUser(email)
+                            userData.isLoadingData = false
+                            userData.email = email
+                        } catch {
+                            userData.isLoadingData = false
+                        }
+                    }
                 } else {
                     userData.email = nil
                 }

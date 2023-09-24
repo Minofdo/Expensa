@@ -14,6 +14,7 @@ struct DashboardView: View {
     @EnvironmentObject var userData: UserData
     
     @State var showAlert = false
+    @State var showSetupSheet = false
     @State var messageBody = ""
     @State var messageTitle = ""
     
@@ -35,7 +36,7 @@ struct DashboardView: View {
                         Image(systemName: "rectangle.portrait.and.arrow.right")
                     }
                     .tint(.green)
-                    .confirmationDialog("Change background", isPresented: $showLogout) {
+                    .confirmationDialog("", isPresented: $showLogout) {
                         Button("Log Out", role: .destructive) {
                             do {
                                 try Auth.auth().signOut()
@@ -50,24 +51,33 @@ struct DashboardView: View {
                 }
             }
             .onAppear {
-                if let firstLogin = userData.isFirstLogin {
-                    if (firstLogin) {
-                        messageTitle = "Welcome"
-                        messageBody = "Welcome to Expensa. Start your journey by creating a budget."
-                    } else {
-                        messageTitle = "Welcome Back!"
-                        messageBody = "Welcome back to Expensa. Don't forget to add your daily expenses."
-                    }
-                    DispatchQueue.main.async {
-                        showAlert = true 
-                    }
+                print("DASHBOARD")
+                if (userData.isFirstLogin) {
+                    messageTitle = "Welcome"
+                    messageBody = "Welcome to Expensa. Start your journey by creating a budget."
+                } else {
+                    messageTitle = "Welcome Back!"
+                    messageBody = "Welcome back to Expensa. Don't forget to add your daily expenses."
+                }
+                DispatchQueue.main.async {
+                    showAlert = true
                 }
             }
             .alert(isPresented: $showAlert) {
                 Alert(title: Text(messageTitle), message: Text(messageBody), dismissButton: .default(Text("Let's GO!")) {
-                    print("HERE")
+                    if (userData.isFirstLogin) {
+                        showSetupSheet = true
+                    }
                 })
             }
+            .sheet(isPresented: $showSetupSheet) {
+                SetBudgetView()
+                    .presentationDetents([.large])
+                    .presentationDragIndicator(.hidden)
+            }
+            .overlay(
+                userData.isLoadingData ? LoadingView() : nil
+            )
         }
     }
 }

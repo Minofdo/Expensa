@@ -10,42 +10,34 @@ import FirebaseDatabase
 
 class UserData: ObservableObject {
     @Published var email :String?
-    @Published var isFirstLogin :Bool?
-    
-    @Published var ref: DatabaseReference 
+    @Published var isFirstLogin :Bool = false
+    @Published var isLoadingData :Bool = false
+    @Published var basicBudget :BasicBudget?
     
     // Entire dataset related to user
     @Published var dataSnapshot: DataSnapshot?
     
-    init() {
-        self.ref = Database.database(url: "https://expensa-e0ac6-default-rtdb.asia-southeast1.firebasedatabase.app").reference();
-    }
+    init() {}
     
-    func loadDataForUser() {
+    func loadDataForUser(_ email: String) async throws {
         print("LOADING DATA")
-        if var email = email {
-            email = makeEmailFireStoreSafe(email)
-            ref.child(email).getData(completion:  { error, snapshot in
-                guard error == nil else {
-                    print(error!.localizedDescription)
-                    return;
-                }
-                if let snapshot = snapshot {
-                    print("DATA LOADED SUCCESSFULLY")
-                    self.dataSnapshot = snapshot
-                    print(snapshot)
-                }
-            });
+        let fireStore = FireStoreService(email)
+        let data = try await fireStore.loadUserDataSnapshot()
+        dataSnapshot = data
+        let value = data.value as? NSDictionary
+        let balance = value?["balance"] as? Double ?? 0
+        let dataDict = value?["budgetForCategory"] as? [String : Double] ?? [:]
+        let budget = BasicBudget(balance: Double(balance), budgetForCategory: dataDict)
+        DispatchQueue.main.async {
+            self.basicBudget = budget
+            self.isFirstLogin = (budget.budgetForCategory.isEmpty)
+            self.isLoadingData = false
         }
-    }
-    
-    func makeEmailFireStoreSafe(_ email: String) -> String {
-        let replacements = [".", "#", "$", "[", "]"]
-        var result = email
-        for replaceChar in replacements {
-            result = result.replacingOccurrences(of: replaceChar, with: "_")
-        }
-        return result
     }
     
 }
+
+enum CustomError: Error {
+    case runtimeError(String)
+}
+
