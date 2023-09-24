@@ -10,7 +10,7 @@ import Firebase
 
 struct DashboardView: View {
     
-    @State var showLogout = false;
+    @State var showLogout = false
     @EnvironmentObject var userData: UserData
     
     @State var showAlert = false
@@ -22,6 +22,31 @@ struct DashboardView: View {
         GeometryReader { geometry in
             ScrollView(.vertical) {
                 VStack {
+                    Text("Running Balance")
+                        .padding(.top, 10)
+                    HStack {
+                        Text("LKR")
+                        Text(String(format: "%.2f", 122223.202))
+                            .font(.system(size: 40))
+                            .fontWeight(.bold)
+                    }
+                    .padding(.vertical, 10)
+                    .padding(.horizontal, 20)
+                    .background(Color.green.opacity(0.2))
+                    .cornerRadius(10)
+                    NavigationLink(destination: AddRecordView()) {
+                        Image(systemName: "plus.circle")
+                        Text("Add Record")
+                    }
+                    .padding(.horizontal, 13)
+                    .padding(.vertical, 8)
+                    .background(Color.blue.opacity(0.9))
+                    .foregroundColor(.white)
+                    .cornerRadius(.infinity)
+                    .padding(.top, 5)
+                    Spacer()
+                    Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+                    Spacer()
                     Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
                 }
                 .frame(minHeight: geometry.size.height)
@@ -84,6 +109,8 @@ struct DashboardView: View {
 
 struct DashboardView_Previews: PreviewProvider {
     static var previews: some View {
-        DashboardView()
+        NavigationView {
+            DashboardView()
+        }
     }
 }

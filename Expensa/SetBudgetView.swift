@@ -266,9 +266,11 @@ struct SetBudgetView: View {
                 action: {
                     Task {
                         userData.isLoadingData = true
-                        await budgetViewModel.saveBasicBudgetDetails(userData.email) { () in
+                        await budgetViewModel.saveBasicBudgetDetails(userData.email) { result in
                             userData.isLoadingData = false
-                            dismiss()
+                            if (result) {
+                                dismiss()
+                            }
                         }
                     }
                 },

@@ -133,9 +133,10 @@ class SetBudgetViewModel: ObservableObject {
         balance -= ((Double(other) ?? 0) * ((otherPeriod == "W") ? 4 : 1))
     }
     
-    func saveBasicBudgetDetails(_ email: String?, completion: @escaping () -> Void) async {
+    func saveBasicBudgetDetails(_ email: String?, completion: @escaping (Bool) -> Void) async {
         if let initialDouble = Double(initialAmount), let email = email {
             if (initialDouble < 1) {
+                completion(false)
                 messageTitle = "INVALID DATA"
                 messageBody = "Please enter a valid amount for initial amount"
                 showAlert = true
@@ -152,9 +153,9 @@ class SetBudgetViewModel: ObservableObject {
                 let basicBudget = BasicBudget(balance: initialDouble, budgetForCategory: dataDict)
                 do {
                     try await fireStore.saveBasicBudgetDetails(basicBudget)
-                    completion()
+                    completion(true)
                 } catch {
-                    completion()
+                    completion(false)
                     messageTitle = "ERROR"
                     messageBody = "Error occurred when saving data. Please try again later."
                     showAlert = true

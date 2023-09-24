@@ -38,6 +38,39 @@ class FireStoreService {
         ])
     }
     
+    func saveRecord(_ data: Record) async throws {
+        let emailKey = makeEmailFireStoreSafe(email)
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let dateStr = dateFormatter.string(from: data.recordDate)
+        if (data.isExpense) {
+            guard let key = ref.child("/\(emailKey)/expense_records").childByAutoId().key else { return }
+            let record = [
+                "amount": data.amount,
+                "date": dateStr,
+                "description": data.description,
+                "location": data.location,
+                "category": data.category
+            ] as [String : Any]
+            try await ref.updateChildValues([
+                "/\(emailKey)/balance": data.newBalance,
+                "/\(emailKey)/expense_records/\(key)": record
+            ])
+        } else {
+            guard let key = ref.child("/\(emailKey)/income_records").childByAutoId().key else { return }
+            let record = [
+                "amount": data.amount,
+                "date": dateStr,
+                "description": data.description,
+                "location": data.location,
+            ] as [String : Any]
+            try await ref.updateChildValues([
+                "/\(emailKey)/balance": data.newBalance,
+                "/\(emailKey)/income_records/\(key)": record
+            ])
+        }
+    }
+    
     // Helper functions
     private func makeEmailFireStoreSafe(_ email: String) -> String {
         let replacements = [".", "#", "$", "[", "]"]
