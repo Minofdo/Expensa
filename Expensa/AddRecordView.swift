@@ -10,20 +10,22 @@ import SwiftUI
 struct AddRecordView: View {
     
     @EnvironmentObject var userData: UserData
-    @State var selection = "I"
+    @State var pickerOption = "I"
     @ObservedObject var recordViewModel = AddRecordViewModel()
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
     var body: some View {
         VStack {
-            Picker("", selection: $selection) {
+            Picker("I", selection: $pickerOption) {
                 Text("Income")
                     .tag("I")
                 Text("Expense")
                     .tag("E")
             }
-            .pickerStyle(.segmented)
+            .pickerStyle(SegmentedPickerStyle())
             .padding(.all, 10)
-            if selection == "I" {
+            
+            if pickerOption == "I" {
                 VStack {
                     Spacer()
                     Text("ADD INCOME")
@@ -72,7 +74,7 @@ struct AddRecordView: View {
                                     .stroke(.gray.opacity(0.5), lineWidth: 1)
                             )
                             .padding(.bottom, 20)
-                            .frame(maxHeight: 70)
+                            .frame(height: 80)
                         
                         Text("Location")
                             .multilineTextAlignment(.leading)
@@ -92,21 +94,18 @@ struct AddRecordView: View {
                     .cornerRadius(5)
                     Spacer()
                     Button(action: {
-                        Task {
-                            if let balance = userData.basicBudget?.balance {
-                                userData.isLoadingData = true
-                                await recordViewModel.saveIncome(userData.email, balance: balance) { result in
+                        if let balance = userData.basicBudget?.balance {
+                            recordViewModel.saveIncome(userData.email, balance: balance) { showSpinner in
+                                if showSpinner {
+                                    userData.isLoadingData = true
+                                } else {
                                     userData.isLoadingData = false
-                                    userData.isLoadingData = false
-                                    if (result) {
-                                        //dismiss()
-                                    }
                                 }
-                            } else {
-                                recordViewModel.messageTitle = "ERROR"
-                                recordViewModel.messageBody = "Error occurred when retrieving user data. Please try again later."
-                                recordViewModel.showAlert = true
                             }
+                        } else {
+                            recordViewModel.messageTitle = "ERROR"
+                            recordViewModel.messageBody = "Error occurred when retrieving user data. Please try again later."
+                            recordViewModel.showAlert = true
                         }
                     }) {
                         Text("Save Income").font(.title2)
@@ -116,7 +115,8 @@ struct AddRecordView: View {
                     .padding(.bottom, 20)
                 }
                 .padding(.horizontal, 10)
-                .background(Color.secondary.opacity(0.4))
+                .background(Color.green.opacity(0.1))
+                .transition(.scale)
             } else {
                 VStack {
                     Spacer()
@@ -187,7 +187,7 @@ struct AddRecordView: View {
                                     .stroke(.gray.opacity(0.5), lineWidth: 1)
                             )
                             .padding(.bottom, 20)
-                            .frame(maxHeight: 70)
+                            .frame(height: 80)
                         
                         Text("Location")
                             .multilineTextAlignment(.leading)
@@ -207,21 +207,20 @@ struct AddRecordView: View {
                     .cornerRadius(5)
                     Spacer()
                     Button(action: {
-                        Task {
-                            if let balance = userData.basicBudget?.balance {
-                                userData.isLoadingData = true
-                                await recordViewModel.saveExpense(userData.email, balance: balance) { result in
+                        if let balance = userData.basicBudget?.balance {
+                            recordViewModel.saveExpense(userData.email, balance: balance) { showSpinner in
+                                print("X")
+                                if showSpinner {
+                                    userData.isLoadingData = true
+                                } else {
                                     userData.isLoadingData = false
-                                    userData.isLoadingData = false
-                                    if (result) {
-                                        //dismiss()
-                                    }
+                                    recordViewModel.showAlert = true
                                 }
-                            } else {
-                                recordViewModel.messageTitle = "ERROR"
-                                recordViewModel.messageBody = "Error occurred when retrieving user data. Please try again later."
-                                recordViewModel.showAlert = true
                             }
+                        } else {
+                            recordViewModel.messageTitle = "ERROR"
+                            recordViewModel.messageBody = "Error occurred when retrieving user data. Please try again later."
+                            recordViewModel.showAlert = true
                         }
                     }) {
                         Text("Save Expense").font(.title2)
@@ -231,7 +230,8 @@ struct AddRecordView: View {
                     .padding(.bottom, 20)
                 }
                 .padding(.horizontal, 10)
-                .background(Color.secondary.opacity(0.4))
+                .background(Color.green.opacity(0.1))
+                .transition(.scale)
                 
             }
         }
@@ -240,7 +240,15 @@ struct AddRecordView: View {
             userData.isLoadingData ? LoadingView() : nil
         )
         .alert(isPresented: $recordViewModel.showAlert) {
-            Alert(title: Text(recordViewModel.messageTitle), message: Text(recordViewModel.messageBody), dismissButton: .default(Text("OK")))
+            if (recordViewModel.showSuccess) {
+                return Alert(title: Text("SUCCESS"), message: Text("Data successfully saved."), primaryButton: .default(Text("Done")) {
+                    self.presentationMode.wrappedValue.dismiss()
+                }, secondaryButton: .default(Text("Add Another")) {
+                    recordViewModel.resetData()
+                })
+            } else {
+                return Alert(title: Text(recordViewModel.messageTitle), message: Text(recordViewModel.messageBody), dismissButton: .default(Text("OK")))
+            }
         }
     }
 }

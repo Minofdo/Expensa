@@ -10,58 +10,120 @@ import Firebase
 
 struct DashboardView: View {
     
-    @State var showLogout = false
     @EnvironmentObject var userData: UserData
-    
-    @State var showAlert = false
-    @State var showSetupSheet = false
-    @State var messageBody = ""
-    @State var messageTitle = ""
+    @ObservedObject var dashViewModel = DashboardViewModel()
     
     var body: some View {
-        GeometryReader { geometry in
-            ScrollView(.vertical) {
-                VStack {
-                    Text("Running Balance")
-                        .padding(.top, 10)
-                    HStack {
-                        Text("LKR")
-                        Text(String(format: "%.2f", 122223.202))
-                            .font(.system(size: 40))
-                            .fontWeight(.bold)
-                    }
-                    .padding(.vertical, 10)
-                    .padding(.horizontal, 20)
-                    .background(Color.green.opacity(0.2))
-                    .cornerRadius(10)
-                    NavigationLink(destination: AddRecordView()) {
-                        Image(systemName: "plus.circle")
-                        Text("Add Record")
-                    }
-                    .padding(.horizontal, 13)
-                    .padding(.vertical, 8)
-                    .background(Color.blue.opacity(0.9))
-                    .foregroundColor(.white)
-                    .cornerRadius(.infinity)
-                    .padding(.top, 5)
-                    Spacer()
-                    Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-                    Spacer()
-                    Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack {
+            VStack {
+                Text("Running Balance")
+                    .padding(.top, 0)
+                HStack {
+                    Text("LKR")
+                    Text(String(format: "%.2f", userData.basicBudget?.balance ?? 0))
+                        .font(.system(size: 40))
+                        .fontWeight(.bold)
                 }
-                .frame(minHeight: geometry.size.height)
+                .padding(.vertical, 10)
+                .padding(.horizontal, 20)
+                .background(Color.green.opacity(0.2))
+                .cornerRadius(10)
+                
+                Picker("I", selection: $dashViewModel.pickerOption) {
+                    Text("Weekly")
+                        .tag("W")
+                    Text("Monthly")
+                        .tag("M")
+                }
+                .pickerStyle(SegmentedPickerStyle())
+                .padding(.vertical, 2)
+                .padding(.horizontal, 10)
+                
+                Divider()
             }
             .frame(maxWidth: .infinity)
-            .navigationBarTitle("Dashboard", displayMode: .inline)
+            .padding(.bottom, -8)
+            
+            GeometryReader { geometry in
+                ScrollView(.vertical) {
+                    VStack {
+                        let userBudget = userData.basicBudget
+                        ForEach(0..<(dashViewModel.categories.count/2), id: \.self) { index in
+                            let indexOne = (index*2)
+                            let catOne = dashViewModel.categories[indexOne].id
+                            let indexTwo = ((index*2) + 1)
+                            let catTwo = dashViewModel.categories[indexTwo].id
+                            HStack {
+                                VStack {
+                                    Text(dashViewModel.categories[indexOne].label)
+                                        .bold()
+                                        .multilineTextAlignment(.center)
+                                    CircleProgressView(
+                                        progressValue: dashViewModel.calcExpensePercentage(catOne, userData),
+                                        progressColor: dashViewModel.catColors[catOne] ?? .gray
+                                    )
+                                    HStack {
+                                        Text("Budget:")
+                                        Spacer()
+                                        Text(String(format: "%.0f", userBudget?.budgetForCategory[catOne] ?? 0))
+                                            .bold()
+                                    }
+                                    HStack {
+                                        Text("Current:")
+                                        Spacer()
+                                        Text(String(format: "%.0f", userBudget?.expenseForCategory[catOne] ?? 0))
+                                            .bold()
+                                    }
+                                }
+                                .padding()
+                                .background(Color(.systemGray6))
+                                .cornerRadius(10)
+                                .padding(.leading)
+                                .padding(.trailing, 3)
+                                VStack {
+                                    Text(dashViewModel.categories[indexTwo].label)
+                                        .bold()
+                                        .multilineTextAlignment(.center)
+                                    CircleProgressView(
+                                        progressValue: dashViewModel.calcExpensePercentage(catTwo, userData),
+                                        progressColor: dashViewModel.catColors[catTwo] ?? .gray
+                                    )
+                                    HStack {
+                                        Text("Budget:")
+                                        Spacer()
+                                        Text(String(format: "%.0f", userBudget?.budgetForCategory[catTwo] ?? 0))
+                                            .bold()
+                                    }
+                                    HStack {
+                                        Text("Current:")
+                                        Spacer()
+                                        Text(String(format: "%.0f", userBudget?.expenseForCategory[catTwo] ?? 0))
+                                            .bold()
+                                    }
+                                }
+                                .padding()
+                                .background(Color(.systemGray6))
+                                .cornerRadius(10)
+                                .padding(.trailing)
+                                .padding(.leading, 3)
+                            }
+                        }
+                    }
+                    .frame(minHeight: geometry.size.height)
+                    .padding(.vertical)
+                }
+                .frame(maxWidth: .infinity)
+                .navigationBarTitle("Dashboard", displayMode: .inline)
+            }
             .toolbar {
-                ToolbarItemGroup(placement: .primaryAction) {
+                ToolbarItem(placement: .navigationBarLeading) {
                     Button {
-                        showLogout = true
+                        dashViewModel.showLogout = true
                     } label: {
-                        Image(systemName: "rectangle.portrait.and.arrow.right")
+                        Image(systemName: "person.crop.circle")
                     }
                     .tint(.green)
-                    .confirmationDialog("", isPresented: $showLogout) {
+                    .confirmationDialog("", isPresented: $dashViewModel.showLogout) {
                         Button("Log Out", role: .destructive) {
                             do {
                                 try Auth.auth().signOut()
@@ -71,31 +133,42 @@ struct DashboardView: View {
                         }
                         Button("Cancel", role: .cancel) { }
                     } message: {
-                        Text("Are you sure to log out?")
+                        Text(userData.email ?? "Are you sure to log out?")
                     }
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink(destination: AddRecordView()) {
+                        Text("Add")
+                        Image(systemName: "plus.square")
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.green)
                 }
             }
             .onAppear {
                 print("DASHBOARD")
-                if (userData.isFirstLogin) {
-                    messageTitle = "Welcome"
-                    messageBody = "Welcome to Expensa. Start your journey by creating a budget."
-                } else {
-                    messageTitle = "Welcome Back!"
-                    messageBody = "Welcome back to Expensa. Don't forget to add your daily expenses."
-                }
-                DispatchQueue.main.async {
-                    showAlert = true
+                if (!dashViewModel.showedGreet) {
+                    if (userData.isFirstLogin) {
+                        dashViewModel.messageTitle = "Welcome"
+                        dashViewModel.messageBody = "Welcome to Expensa. Start your journey by creating a budget."
+                    } else {
+                        dashViewModel.messageTitle = "Welcome Back!"
+                        dashViewModel.messageBody = "Welcome back to Expensa. Don't forget to add your daily expenses."
+                    }
+                    DispatchQueue.main.async {
+                        dashViewModel.showAlert = true
+                        dashViewModel.showedGreet = true
+                    }
                 }
             }
-            .alert(isPresented: $showAlert) {
-                Alert(title: Text(messageTitle), message: Text(messageBody), dismissButton: .default(Text("Let's GO!")) {
+            .alert(isPresented: $dashViewModel.showAlert) {
+                Alert(title: Text(dashViewModel.messageTitle), message: Text(dashViewModel.messageBody), dismissButton: .default(Text("Let's GO!")) {
                     if (userData.isFirstLogin) {
-                        showSetupSheet = true
+                        dashViewModel.showSetupSheet = true
                     }
                 })
             }
-            .sheet(isPresented: $showSetupSheet) {
+            .sheet(isPresented: $dashViewModel.showSetupSheet) {
                 SetBudgetView()
                     .presentationDetents([.large])
                     .presentationDragIndicator(.hidden)

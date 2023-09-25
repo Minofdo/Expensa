@@ -11,5 +11,6 @@ struct BasicBudget: Codable {
     
     var balance: Double
     var budgetForCategory: [String : Double]
+    var expenseForCategory: [String : Double]
     
 }

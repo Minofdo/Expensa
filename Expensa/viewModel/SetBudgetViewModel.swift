@@ -150,7 +150,7 @@ class SetBudgetViewModel: ObservableObject {
                     "maintenance": ((Double(maintenance) ?? 0) * ((maintenancePeriod == "W") ? 4 : 1)),
                     "other": ((Double(other) ?? 0) * ((otherPeriod == "W") ? 4 : 1))
                 ]
-                let basicBudget = BasicBudget(balance: initialDouble, budgetForCategory: dataDict)
+                let basicBudget = BasicBudget(balance: initialDouble, budgetForCategory: dataDict, expenseForCategory: [:])
                 do {
                     try await fireStore.saveBasicBudgetDetails(basicBudget)
                     completion(true)

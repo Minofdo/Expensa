@@ -13,6 +13,7 @@
 		E6CB8C9F2AB1CA5700C302D5 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6CB8C9E2AB1CA5700C302D5 /* LoginView.swift */; };
 		E6CB8CA42AB1D6F600C302D5 /* UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6CB8CA32AB1D6F600C302D5 /* UserData.swift */; };
 		E6CB8CA62AB1D86000C302D5 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6CB8CA52AB1D86000C302D5 /* DashboardView.swift */; };
+		E6CC0D912AC216D8006F4E81 /* DashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6CC0D902AC216D8006F4E81 /* DashboardViewModel.swift */; };
 		E6DA09532AC018380025822C /* BasicBudget.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6DA09522AC018380025822C /* BasicBudget.swift */; };
 		E6DA09552AC02FDF0025822C /* FireStoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6DA09542AC02FDF0025822C /* FireStoreService.swift */; };
 		E6DA09572AC066350025822C /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6DA09562AC066350025822C /* LoadingView.swift */; };
@@ -36,6 +37,7 @@
 		E6CB8C9E2AB1CA5700C302D5 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		E6CB8CA32AB1D6F600C302D5 /* UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserData.swift; sourceTree = "<group>"; };
 		E6CB8CA52AB1D86000C302D5 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		E6CC0D902AC216D8006F4E81 /* DashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewModel.swift; sourceTree = "<group>"; };
 		E6DA09522AC018380025822C /* BasicBudget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicBudget.swift; sourceTree = "<group>"; };
 		E6DA09542AC02FDF0025822C /* FireStoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireStoreService.swift; sourceTree = "<group>"; };
 		E6DA09562AC066350025822C /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
@@ -79,6 +81,7 @@
 				E60AF6632ABC8C5A00150739 /* LoginViewModel.swift */,
 				E60AF66B2ABCDB8000150739 /* SetBudgetViewModel.swift */,
 				E6F67A4F2AC0C6D400DBD774 /* AddRecordViewModel.swift */,
+				E6CC0D902AC216D8006F4E81 /* DashboardViewModel.swift */,
 			);
 			path = viewModel;
 			sourceTree = "<group>";
@@ -222,6 +225,7 @@
 				E6CB8CA42AB1D6F600C302D5 /* UserData.swift in Sources */,
 				E60AF6642ABC8C5A00150739 /* LoginViewModel.swift in Sources */,
 				E6DA09572AC066350025822C /* LoadingView.swift in Sources */,
+				E6CC0D912AC216D8006F4E81 /* DashboardViewModel.swift in Sources */,
 				E6DA09532AC018380025822C /* BasicBudget.swift in Sources */,
 				E6DBF2CD2AA34099004A7B35 /* ExpensaApp.swift in Sources */,
 				E6FD347C2AB743F1001E296D /* Category.swift in Sources */,

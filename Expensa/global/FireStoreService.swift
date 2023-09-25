@@ -43,8 +43,11 @@ class FireStoreService {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let dateStr = dateFormatter.string(from: data.recordDate)
+        let weekFormatter = DateFormatter()
+        weekFormatter.dateFormat = "w"
+        let weekNumber = weekFormatter.string(from: data.recordDate)
         if (data.isExpense) {
-            guard let key = ref.child("/\(emailKey)/expense_records").childByAutoId().key else { return }
+            guard let key = ref.child("/\(emailKey)/expense_records/\(weekNumber)").childByAutoId().key else { return }
             let record = [
                 "amount": data.amount,
                 "date": dateStr,
@@ -54,10 +57,10 @@ class FireStoreService {
             ] as [String : Any]
             try await ref.updateChildValues([
                 "/\(emailKey)/balance": data.newBalance,
-                "/\(emailKey)/expense_records/\(key)": record
+                "/\(emailKey)/expense_records/\(weekNumber)/\(key)": record
             ])
         } else {
-            guard let key = ref.child("/\(emailKey)/income_records").childByAutoId().key else { return }
+            guard let key = ref.child("/\(emailKey)/income_records/\(weekNumber)").childByAutoId().key else { return }
             let record = [
                 "amount": data.amount,
                 "date": dateStr,
@@ -66,7 +69,7 @@ class FireStoreService {
             ] as [String : Any]
             try await ref.updateChildValues([
                 "/\(emailKey)/balance": data.newBalance,
-                "/\(emailKey)/income_records/\(key)": record
+                "/\(emailKey)/income_records/\(weekNumber)/\(key)": record
             ])
         }
     }
