@@ -27,49 +27,52 @@ struct LoadingView: View {
 }
 
 struct CircleProgressView: View {
-    @State private var progressValue: Double
-    @State private var progressColor: Color
-    @State private var textLabel: String
     
-    init(progressValue: Double, progressColor: Color) {
-        self.progressColor = progressColor
-        if (progressValue > Double.greatestFiniteMagnitude || progressValue < -Double.greatestFiniteMagnitude) {
-            self.progressValue = 1
-            self.textLabel = "∞"
-        } else {
-            self.progressValue = progressValue
-            self.textLabel = String(format: "%.0f", (progressValue * 100)) + "%"
-        }
-    }
+    @ObservedObject var dashViewModel: DashboardViewModel
+    @State var categoryID: String
+    
+    //    init(progressValue: Double, progressColor: Color) {
+    //        self.progressColor = progressColor
+    //        if (progressValue > Double.greatestFiniteMagnitude || progressValue < -Double.greatestFiniteMagnitude) {
+    //            self.progressValue = 1
+    //            self.textLabel = "∞"
+    //        } else {
+    //            self.progressValue = progressValue
+    //            self.textLabel = String(format: "%.0f", (progressValue * 100)) + "%"
+    //        }
+    //    }
     
     var body: some View {
+        let colour = dashViewModel.catColors[categoryID] ?? Color.gray
+        let object = calculateData(dashViewModel.catValues[categoryID] ?? 0)
+        
         VStack {
             ZStack {
-                Text(textLabel)
+                Text(object.text)
                     .font(.title2)
                     .bold()
                 Circle()
                     .stroke(
-                        progressColor.opacity(0.2),
+                        colour.opacity(0.2),
                         lineWidth: 30
                     )
                 
                 Circle()
-                    .trim(from: 0, to: abs(progressValue))
+                    .trim(from: 0, to: abs(object.value))
                     .stroke(
-                        progressColor,
+                        colour,
                         style: StrokeStyle(
                             lineWidth: 30,
                             lineCap: .round
                         )
                     )
                     .rotationEffect(.degrees(-90))
-                    .scaleEffect(x: (progressValue < 0) ? -1 : 1, y: 1)
-                    .animation(.easeOut, value: abs(progressValue))
+                    .scaleEffect(x: (object.value < 0) ? -1 : 1, y: 1)
+                    .animation(.easeOut, value: abs(object.value))
                     .opacity(1)
                 
                 Circle()
-                    .trim(from: 0, to: abs(progressValue))
+                    .trim(from: 0, to: abs(object.value))
                     .stroke(
                         Color.red,
                         style: StrokeStyle(
@@ -78,15 +81,15 @@ struct CircleProgressView: View {
                         )
                     )
                     .rotationEffect(.degrees(-90))
-                    .scaleEffect(x: (progressValue < 0) ? -1 : 1, y: 1)
-                    .animation(.easeOut, value: abs(progressValue))
-                    .opacity((progressValue < 0) ? 1 : calculateOpacity())
+                    .scaleEffect(x: (object.value < 0) ? -1 : 1, y: 1)
+                    .animation(.easeOut, value: abs(object.value))
+                    .opacity((object.value < 0) ? 1 : calculateOpacity())
             }
         }.padding()
     }
     
     func calculateOpacity() -> Double {
-        let tempVal = abs(progressValue)
+        let tempVal = abs(dashViewModel.catValues[categoryID] ?? 0)
         if (tempVal < 0.05) {
             return 1
         } else if (tempVal < 0.10) {
@@ -100,10 +103,17 @@ struct CircleProgressView: View {
         }
     }
     
-}
-
-struct LoadingView_Previews: PreviewProvider {
-    static var previews: some View {
-        CircleProgressView(progressValue: 0.2, progressColor: .yellow).padding()
+    func calculateData(_ progressValue: Double) -> (text: String, value: Double) {
+        var updatedProgress: Double = 0
+        var textValue = ""
+        if (progressValue > Double.greatestFiniteMagnitude || progressValue < -Double.greatestFiniteMagnitude) {
+            updatedProgress = 1
+            textValue = "∞"
+        } else {
+            updatedProgress = progressValue
+            textValue = String(format: "%.0f", (progressValue * 100)) + "%"
+        }
+        return (textValue, updatedProgress)
     }
+    
 }

@@ -10,7 +10,7 @@ import Foundation
 @MainActor
 class DashboardViewModel: ObservableObject {
     
-    @Published var showedGreet = false
+    @Published var isLoadingData = false
     @Published var showLogout = false
     @Published var showAlert = false
     @Published var showSetupSheet = false
@@ -19,21 +19,25 @@ class DashboardViewModel: ObservableObject {
     
     @Published var categories = Categories().categories
     @Published var catColors = Categories().categoryColor
+    @Published var catValues: [String : Double] = [:]
     @Published var pickerOption = "W"
     
     
-    func calcExpensePercentage(_ categoryId: String, _ userData: UserData) -> Double {
-        let targetValue = userData.basicBudget?.budgetForCategory[categoryId]
-        let expenseValue = userData.basicBudget?.expenseForCategory[categoryId]
-        if let targetValue = targetValue, let expenseValue = expenseValue {
-            if (expenseValue > targetValue) {
-                return (((expenseValue - targetValue) / targetValue) * -1)
+    func calcExpensePercentage(_ userData: UserData) {
+        for category in categories {
+            let targetValue = userData.basicBudget?.budgetForCategory[category.id]
+            let expenseValue = userData.basicBudget?.expenseForCategory[category.id]
+            if let targetValue = targetValue, let expenseValue = expenseValue {
+                if (expenseValue > targetValue) {
+                    catValues[category.id] = (((expenseValue - targetValue) / targetValue) * -1)
+                } else {
+                    catValues[category.id] = ((targetValue - expenseValue) / targetValue)
+                }
             } else {
-                return ((targetValue - expenseValue) / targetValue)
+                catValues[category.id] = 0
             }
-        } else {
-            return 0
         }
+        print(catValues)
     }
     
 }

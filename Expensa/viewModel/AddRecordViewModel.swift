@@ -10,6 +10,7 @@ import Foundation
 @MainActor
 class AddRecordViewModel: ObservableObject {
     
+    @Published var isLoadingData = false
     @Published var showAlert = false
     @Published var showSuccess = false
     @Published var messageBody = ""
@@ -29,7 +30,7 @@ class AddRecordViewModel: ObservableObject {
         }
     }
     
-    func saveIncome(_ email: String?, balance: Double, showSpinner: @escaping (Bool) -> Void) {
+    func saveIncome(_ email: String?, balance: Double) {
         print("A")
         if (
             amount.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
@@ -58,7 +59,7 @@ class AddRecordViewModel: ObservableObject {
                     category: category
                 )
                 
-                showSpinner(true)
+                self.isLoadingData = true
                 Task {
                     var success = false
                     do {
@@ -69,17 +70,14 @@ class AddRecordViewModel: ObservableObject {
                         success = false
                     }
                     DispatchQueue.main.async {
-                        showSpinner(false)
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                            if (success) {
-                                self.showSuccess = true
-                                self.showAlert = true
-                            } else {
-                                self.messageTitle = "ERROR"
-                                self.messageBody = "Error occurred when saving data. Please try again later."
-                                self.showAlert = true
-                            }
+                        self.isLoadingData = false
+                        if (success) {
+                            self.showSuccess = true
+                        } else {
+                            self.messageTitle = "ERROR"
+                            self.messageBody = "Error occurred when saving data. Please try again later."
                         }
+                        self.showAlert = true
                     }
                 }
             }
@@ -90,7 +88,7 @@ class AddRecordViewModel: ObservableObject {
         }
     }
     
-    func saveExpense(_ email: String?, balance: Double, showSpinner: @escaping (Bool) -> Void) {
+    func saveExpense(_ email: String?, balance: Double) {
         if (
             amount.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
             category.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
@@ -116,7 +114,7 @@ class AddRecordViewModel: ObservableObject {
                     location: location,
                     category: category
                 )
-                showSpinner(true)
+                self.isLoadingData = true
                 Task {
                     var success = false
                     do {
@@ -127,13 +125,13 @@ class AddRecordViewModel: ObservableObject {
                         success = false
                     }
                     DispatchQueue.main.async {
+                        self.isLoadingData = false
                         if (success) {
                             self.showSuccess = true
                         } else {
                             self.messageTitle = "ERROR"
                             self.messageBody = "Error occurred when saving data. Please try again later."
                         }
-                        showSpinner(false)
                         self.showAlert = true
                     }
                 }

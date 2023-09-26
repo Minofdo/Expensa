@@ -10,6 +10,7 @@ import Foundation
 @MainActor
 class SetBudgetViewModel: ObservableObject {
     
+    @Published var isLoadingData = false
     @Published var showAlert = false
     @Published var messageBody = ""
     @Published var messageTitle = ""

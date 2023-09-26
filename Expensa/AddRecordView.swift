@@ -95,13 +95,7 @@ struct AddRecordView: View {
                     Spacer()
                     Button(action: {
                         if let balance = userData.basicBudget?.balance {
-                            recordViewModel.saveIncome(userData.email, balance: balance) { showSpinner in
-                                if showSpinner {
-                                    userData.isLoadingData = true
-                                } else {
-                                    userData.isLoadingData = false
-                                }
-                            }
+                            recordViewModel.saveIncome(userData.email, balance: balance)
                         } else {
                             recordViewModel.messageTitle = "ERROR"
                             recordViewModel.messageBody = "Error occurred when retrieving user data. Please try again later."
@@ -208,15 +202,7 @@ struct AddRecordView: View {
                     Spacer()
                     Button(action: {
                         if let balance = userData.basicBudget?.balance {
-                            recordViewModel.saveExpense(userData.email, balance: balance) { showSpinner in
-                                print("X")
-                                if showSpinner {
-                                    userData.isLoadingData = true
-                                } else {
-                                    userData.isLoadingData = false
-                                    recordViewModel.showAlert = true
-                                }
-                            }
+                            recordViewModel.saveExpense(userData.email, balance: balance)
                         } else {
                             recordViewModel.messageTitle = "ERROR"
                             recordViewModel.messageBody = "Error occurred when retrieving user data. Please try again later."
@@ -237,7 +223,7 @@ struct AddRecordView: View {
         }
         .navigationBarTitle("New Record", displayMode: .inline)
         .overlay(
-            userData.isLoadingData ? LoadingView() : nil
+            recordViewModel.isLoadingData ? LoadingView() : nil
         )
         .alert(isPresented: $recordViewModel.showAlert) {
             if (recordViewModel.showSuccess) {

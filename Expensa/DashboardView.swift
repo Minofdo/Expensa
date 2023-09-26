@@ -11,7 +11,7 @@ import Firebase
 struct DashboardView: View {
     
     @EnvironmentObject var userData: UserData
-    @ObservedObject var dashViewModel = DashboardViewModel()
+    @StateObject var dashViewModel = DashboardViewModel()
     
     var body: some View {
         VStack {
@@ -58,10 +58,7 @@ struct DashboardView: View {
                                     Text(dashViewModel.categories[indexOne].label)
                                         .bold()
                                         .multilineTextAlignment(.center)
-                                    CircleProgressView(
-                                        progressValue: dashViewModel.calcExpensePercentage(catOne, userData),
-                                        progressColor: dashViewModel.catColors[catOne] ?? .gray
-                                    )
+                                    CircleProgressView(dashViewModel: dashViewModel, categoryID: catOne)
                                     HStack {
                                         Text("Budget:")
                                         Spacer()
@@ -84,10 +81,7 @@ struct DashboardView: View {
                                     Text(dashViewModel.categories[indexTwo].label)
                                         .bold()
                                         .multilineTextAlignment(.center)
-                                    CircleProgressView(
-                                        progressValue: dashViewModel.calcExpensePercentage(catTwo, userData),
-                                        progressColor: dashViewModel.catColors[catTwo] ?? .gray
-                                    )
+                                    CircleProgressView(dashViewModel: dashViewModel, categoryID: catTwo)
                                     HStack {
                                         Text("Budget:")
                                         Spacer()
@@ -147,7 +141,7 @@ struct DashboardView: View {
             }
             .onAppear {
                 print("DASHBOARD")
-                if (!dashViewModel.showedGreet) {
+                if (!userData.isGreetDisplayed) {
                     if (userData.isFirstLogin) {
                         dashViewModel.messageTitle = "Welcome"
                         dashViewModel.messageBody = "Welcome to Expensa. Start your journey by creating a budget."
@@ -157,7 +151,20 @@ struct DashboardView: View {
                     }
                     DispatchQueue.main.async {
                         dashViewModel.showAlert = true
-                        dashViewModel.showedGreet = true
+                        userData.isGreetDisplayed = true
+                    }
+                }
+                
+                dashViewModel.isLoadingData = true
+                Task {
+                    do {
+                        try await userData.loadExpenses(dashViewModel.pickerOption)
+                    } catch {
+                        print(error)
+                    }
+                    DispatchQueue.main.async {
+                        dashViewModel.calcExpensePercentage(userData)
+                        self.dashViewModel.isLoadingData = false
                     }
                 }
             }
@@ -174,7 +181,7 @@ struct DashboardView: View {
                     .presentationDragIndicator(.hidden)
             }
             .overlay(
-                userData.isLoadingData ? LoadingView() : nil
+                dashViewModel.isLoadingData ? LoadingView() : nil
             )
         }
     }

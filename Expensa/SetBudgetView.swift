@@ -265,9 +265,9 @@ struct SetBudgetView: View {
             Button(
                 action: {
                     Task {
-                        userData.isLoadingData = true
+                        budgetViewModel.isLoadingData = true
                         await budgetViewModel.saveBasicBudgetDetails(userData.email) { result in
-                            userData.isLoadingData = false
+                            budgetViewModel.isLoadingData = false
                             if (result) {
                                 dismiss()
                             }
@@ -293,7 +293,7 @@ struct SetBudgetView: View {
         .navigationBarTitle("Set-UP", displayMode: .large)
         .interactiveDismissDisabled()
         .overlay(
-            userData.isLoadingData ? LoadingView() : nil
+            budgetViewModel.isLoadingData ? LoadingView() : nil
         )
     }
 }

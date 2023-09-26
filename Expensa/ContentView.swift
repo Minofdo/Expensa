@@ -11,6 +11,7 @@ import Firebase
 struct ContentView: View {
     
     @State var authStateListenerHandle: AuthStateDidChangeListenerHandle?
+    @State var isLoadingData = false
     @StateObject var userData = UserData()
     
     var body: some View {
@@ -21,7 +22,7 @@ struct ContentView: View {
             } else {
                 LoginView()
                     .overlay(
-                        userData.isLoadingData ? LoadingView() : nil
+                        isLoadingData ? LoadingView() : nil
                     )
             }
         }
@@ -31,12 +32,13 @@ struct ContentView: View {
                 if let email = user?.email {
                     Task {
                         do {
-                            userData.isLoadingData = true
+                            isLoadingData = true
                             try await userData.loadDataForUser(email)
-                            userData.isLoadingData = false
+                            isLoadingData = false
                             userData.email = email
                         } catch {
-                            userData.isLoadingData = false
+                            print(error)
+                            isLoadingData = false
                         }
                     }
                 } else {
