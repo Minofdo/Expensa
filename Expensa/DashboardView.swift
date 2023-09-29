@@ -13,6 +13,8 @@ struct DashboardView: View {
     @EnvironmentObject var userData: UserData
     @StateObject var dashViewModel = DashboardViewModel()
     
+    @State var showUpdateSheet = false
+    
     var body: some View {
         VStack {
             VStack {
@@ -146,6 +148,9 @@ struct DashboardView: View {
                     }
                     .tint(.green)
                     .confirmationDialog("", isPresented: $dashViewModel.showLogout) {
+                        Button("Change Budget") {
+                            showUpdateSheet = true
+                        }
                         Button("Log Out", role: .destructive) {
                             do {
                                 try Auth.auth().signOut()
@@ -208,10 +213,31 @@ struct DashboardView: View {
                     .presentationDetents([.large])
                     .presentationDragIndicator(.hidden)
             }
+            .sheet(isPresented: $showUpdateSheet) {
+                SetBudgetView(budgetViewModel: getBudgetViewModel(), isUpdate: true)
+                    .presentationDetents([.large])
+                    .presentationDragIndicator(.hidden)
+            }
             .overlay(
                 dashViewModel.isLoadingData ? LoadingView() : nil
             )
         }
+    }
+    
+    func getBudgetViewModel() -> SetBudgetViewModel {
+        let data = SetBudgetViewModel()
+        data.balance = userData.basicBudget?.balance ?? 0
+        data.initialAmount = String(format: "%.0f", userData.basicBudget?.balance ?? 0)
+        let catBudget = userData.basicBudget?.budgetForCategory
+        if let catBudget = catBudget {
+            data.savings = String(format: "%.0f", catBudget["savings"] ?? 0)
+            data.entertainment = String(format: "%.0f", catBudget["entertainment"] ?? 0)
+            data.food = String(format: "%.0f", catBudget["food"] ?? 0)
+            data.travel = String(format: "%.0f", catBudget["travel"] ?? 0)
+            data.maintenance = String(format: "%.0f", catBudget["maintenance"] ?? 0)
+            data.other = String(format: "%.0f", catBudget["other"] ?? 0)
+        }
+        return data
     }
 }
 

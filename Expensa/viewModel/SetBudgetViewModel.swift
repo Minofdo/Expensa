@@ -134,7 +134,7 @@ class SetBudgetViewModel: ObservableObject {
         balance -= ((Double(other) ?? 0) * ((otherPeriod == "W") ? 4 : 1))
     }
     
-    func saveBasicBudgetDetails(_ email: String?, completion: @escaping (Bool) -> Void) async {
+    func saveBasicBudgetDetails(_ email: String?, _ isUpdate: Bool, completion: @escaping (Bool) -> Void) async {
         if let initialDouble = Double(initialAmount), let email = email {
             if (initialDouble < 1) {
                 completion(false)
@@ -153,7 +153,7 @@ class SetBudgetViewModel: ObservableObject {
                 ]
                 let basicBudget = BasicBudget(balance: initialDouble, budgetForCategory: dataDict, expenseForCategory: [:])
                 do {
-                    try await fireStore.saveBasicBudgetDetails(basicBudget)
+                    try await fireStore.saveBasicBudgetDetails(basicBudget,isUpdate)
                     completion(true)
                 } catch {
                     completion(false)

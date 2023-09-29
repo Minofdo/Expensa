@@ -13,55 +13,60 @@ struct SetBudgetView: View {
     @EnvironmentObject var userData: UserData
     @ObservedObject var budgetViewModel = SetBudgetViewModel()
     
+    @State var isUpdate = false
+    
     var categories = Categories()
     
     var body: some View {
         // https://medium.com/@sharma17krups/swiftui-form-tutorial-how-to-create-settings-screen-using-form-part-1-8e8e80cf584e
         Form {
-            HStack{
-                Spacer()
-                VStack {
-                    Text("MONTHLY BALANCE")
-                        .font(.title2)
-                    HStack {
-                        Text("LKR")
-                            .font(.title)
-                        Text(String(format: "%.2f", budgetViewModel.balance))
-                            .font(.largeTitle)
-                            .fontWeight(.bold)
-                    }
-                    .padding(.top, 1)
-                    .padding(.bottom, 2)
-                    Text("Entered values will get reflected here. You can continue with a negative value")
-                        .multilineTextAlignment(.center)
-                        .font(.callout)
-                }
-                Spacer()
-            }
             
-            Section(header: Text("Amount for budgeting"), content: {
+            if !isUpdate {
                 HStack{
-                    Text("Initial Amount")
                     Spacer()
-                    HStack {
-                        Text("LKR")
-                            .fixedSize()
-                        TextField("Amount", text: $budgetViewModel.initialAmount)
-                            .multilineTextAlignment(.trailing)
-                            .textFieldStyle(.plain)
-                            .keyboardType(.decimalPad)
-                            .textInputAutocapitalization(.never)
-                            .autocorrectionDisabled()
-                            .frame(width: 90, alignment: .trailing)
+                    VStack {
+                        Text("MONTHLY BALANCE")
+                            .font(.title2)
+                        HStack {
+                            Text("LKR")
+                                .font(.title)
+                            Text(String(format: "%.2f", budgetViewModel.balance))
+                                .font(.largeTitle)
+                                .fontWeight(.bold)
+                        }
+                        .padding(.top, 1)
+                        .padding(.bottom, 2)
+                        Text("Entered values will get reflected here. You can continue with a negative value")
+                            .multilineTextAlignment(.center)
+                            .font(.callout)
                     }
-                    .padding(.all, 10)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 3)
-                            .stroke(.gray, lineWidth: 1)
-                    )
+                    Spacer()
                 }
                 
-            })
+                Section(header: Text("Amount for budgeting"), content: {
+                    HStack{
+                        Text("Initial Amount")
+                        Spacer()
+                        HStack {
+                            Text("LKR")
+                                .fixedSize()
+                            TextField("Amount", text: $budgetViewModel.initialAmount)
+                                .multilineTextAlignment(.trailing)
+                                .textFieldStyle(.plain)
+                                .keyboardType(.decimalPad)
+                                .textInputAutocapitalization(.never)
+                                .autocorrectionDisabled()
+                                .frame(width: 90, alignment: .trailing)
+                        }
+                        .padding(.all, 10)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 3)
+                                .stroke(.gray, lineWidth: 1)
+                        )
+                    }
+                    
+                })
+            }
             
             Section(header: Text("Budget"), content: {
                 VStack {
@@ -262,36 +267,47 @@ struct SetBudgetView: View {
                 }
             })
             
-            Button(
-                action: {
-                    Task {
-                        budgetViewModel.isLoadingData = true
-                        await budgetViewModel.saveBasicBudgetDetails(userData.email) { result in
+            VStack {
+                Button(
+                    action: {
+                        Task {
+                            budgetViewModel.isLoadingData = true
+                            await budgetViewModel.saveBasicBudgetDetails(userData.email, isUpdate) { result in
+                            }
+                            do {
+                                try await userData.loadExpenses()
+                            } catch {
+                                print(error)
+                            }
+                            budgetViewModel.isLoadingData = false
+                            dismiss()
                         }
-                        do {
-                            try await userData.loadExpenses()
-                        } catch {
-                            print(error)
-                        }
-                        budgetViewModel.isLoadingData = false
+                    },
+                    label: {
+                        Text(isUpdate ? "UPDATE" : "SAVE")
+                            .font(.title2)
+                            .padding(.bottom, 5)
+                            .frame(maxWidth: .infinity)
+                            .bold()
+                    }
+                )
+                .buttonStyle(.borderedProminent)
+                .tint(.green)
+                .listRowBackground(Color.clear)
+                .padding(.horizontal, 50)
+                .alert(isPresented: $budgetViewModel.showAlert) {
+                    Alert(title: Text(budgetViewModel.messageTitle), message: Text(budgetViewModel.messageBody), dismissButton: .default(Text("OK")))
+                }
+                if isUpdate {
+                    Button("Cancel") {
                         dismiss()
                     }
-                },
-                label: {
-                    Text("SAVE")
-                        .font(.title2)
-                        .padding(.vertical, 5)
-                        .frame(maxWidth: .infinity)
-                        .bold()
+                    .buttonStyle(.borderless)
+                    .listRowBackground(Color.clear)
+                    .frame(maxWidth: .infinity)
                 }
-            )
-            .buttonStyle(.borderedProminent)
-            .tint(.green)
-            .listRowBackground(Color.clear)
-            .padding(.horizontal, 50)
-            .alert(isPresented: $budgetViewModel.showAlert) {
-                Alert(title: Text(budgetViewModel.messageTitle), message: Text(budgetViewModel.messageBody), dismissButton: .default(Text("OK")))
             }
+            .listRowBackground(Color.clear)
         }
         .navigationBarTitle("Set-UP", displayMode: .large)
         .interactiveDismissDisabled()

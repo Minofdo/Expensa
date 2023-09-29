@@ -120,6 +120,7 @@ struct LoginSheet: View {
             
             SecureField("", text: $loginViewModel.password, prompt: Text("Password").foregroundColor(.primary)
             )
+            .textContentType(.oneTimeCode)
             .textFieldStyle(.plain)
             .padding()
             .cornerRadius(5)
@@ -241,6 +242,7 @@ struct SignupSheet: View {
             
             SecureField("", text: $loginViewModel.password, prompt: Text("Password").foregroundColor(.primary)
             )
+            .textContentType(.oneTimeCode)
             .textFieldStyle(.plain)
             .padding()
             .cornerRadius(5)
@@ -253,6 +255,7 @@ struct SignupSheet: View {
             
             SecureField("", text: $loginViewModel.confirmPassword, prompt: Text("Confirm Password").foregroundColor(.primary)
             )
+            .textContentType(.oneTimeCode)
             .textFieldStyle(.plain)
             .padding()
             .cornerRadius(5)

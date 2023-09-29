@@ -26,19 +26,32 @@ class FireStoreService {
         return try await ref.child(emailKey).getData();
     }
     
-    func saveBasicBudgetDetails(_ data: BasicBudget) async throws {
+    func saveBasicBudgetDetails(_ data: BasicBudget, _ isUpdate: Bool) async throws {
         let emailKey = makeEmailFireStoreSafe(email)
-        try await self.ref.child(emailKey).setValue([
-            "balance": data.balance,
-            "budgetForCategory": [
-                "savings": (data.budgetForCategory["savings"] ?? Double(0)),
-                "entertainment": (data.budgetForCategory["entertainment"] ?? Double(0)),
-                "food": (data.budgetForCategory["food"] ?? Double(0)),
-                "travel": (data.budgetForCategory["travel"] ?? Double(0)),
-                "maintenance": (data.budgetForCategory["maintenance"] ?? Double(0)),
-                "other": (data.budgetForCategory["other"] ?? Double(0)),
-            ]
-        ])
+        if isUpdate {
+            try await self.ref.child(emailKey).updateChildValues([
+                "budgetForCategory": [
+                    "savings": (data.budgetForCategory["savings"] ?? Double(0)),
+                    "entertainment": (data.budgetForCategory["entertainment"] ?? Double(0)),
+                    "food": (data.budgetForCategory["food"] ?? Double(0)),
+                    "travel": (data.budgetForCategory["travel"] ?? Double(0)),
+                    "maintenance": (data.budgetForCategory["maintenance"] ?? Double(0)),
+                    "other": (data.budgetForCategory["other"] ?? Double(0)),
+                ]
+            ])
+        } else {
+            try await self.ref.child(emailKey).setValue([
+                "balance": data.balance,
+                "budgetForCategory": [
+                    "savings": (data.budgetForCategory["savings"] ?? Double(0)),
+                    "entertainment": (data.budgetForCategory["entertainment"] ?? Double(0)),
+                    "food": (data.budgetForCategory["food"] ?? Double(0)),
+                    "travel": (data.budgetForCategory["travel"] ?? Double(0)),
+                    "maintenance": (data.budgetForCategory["maintenance"] ?? Double(0)),
+                    "other": (data.budgetForCategory["other"] ?? Double(0)),
+                ]
+            ])
+        }
     }
     
     func saveRecord(_ data: Record) async throws {
