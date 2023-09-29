@@ -5,7 +5,7 @@
 //  Created by Minoli Fernando on 2023-09-25.
 //
 
-import Foundation
+import SwiftUI
 
 @MainActor
 class DashboardViewModel: ObservableObject {
@@ -19,9 +19,8 @@ class DashboardViewModel: ObservableObject {
     
     @Published var categories = Categories().categories
     @Published var catColors = Categories().categoryColor
-    @Published var catValues: [String : Double] = [:]
-    @Published var pickerOption = "W"
-    
+    @Published var catValues: [String : Double?] = [:]
+    @AppStorage("homeBudgetMode") var pickerOption = "M"
     
     func calcExpensePercentage(_ userData: UserData) {
         for category in categories {
@@ -34,7 +33,7 @@ class DashboardViewModel: ObservableObject {
                     catValues[category.id] = ((targetValue - expenseValue) / targetValue)
                 }
             } else {
-                catValues[category.id] = 0
+                catValues[category.id] = nil
             }
         }
         print(catValues)

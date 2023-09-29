@@ -29,6 +29,7 @@ struct LoadingView: View {
 struct CircleProgressView: View {
     
     @ObservedObject var dashViewModel: DashboardViewModel
+    @EnvironmentObject var userData: UserData
     @State var categoryID: String
     
     //    init(progressValue: Double, progressColor: Color) {
@@ -44,7 +45,7 @@ struct CircleProgressView: View {
     
     var body: some View {
         let colour = dashViewModel.catColors[categoryID] ?? Color.gray
-        let object = calculateData(dashViewModel.catValues[categoryID] ?? 0)
+        let object = calculateData(dashViewModel.catValues[categoryID])
         
         VStack {
             ZStack {
@@ -83,13 +84,13 @@ struct CircleProgressView: View {
                     .rotationEffect(.degrees(-90))
                     .scaleEffect(x: (object.value < 0) ? -1 : 1, y: 1)
                     .animation(.easeOut, value: abs(object.value))
-                    .opacity((object.value < 0) ? 1 : calculateOpacity())
+                    .opacity((object.value < 0) ? 1 : calculateOpacity(object.value))
             }
         }.padding()
     }
     
-    func calculateOpacity() -> Double {
-        let tempVal = abs(dashViewModel.catValues[categoryID] ?? 0)
+    func calculateOpacity(_ value: Double) -> Double {
+        let tempVal = abs(value)
         if (tempVal < 0.05) {
             return 1
         } else if (tempVal < 0.10) {
@@ -103,17 +104,23 @@ struct CircleProgressView: View {
         }
     }
     
-    func calculateData(_ progressValue: Double) -> (text: String, value: Double) {
-        var updatedProgress: Double = 0
-        var textValue = ""
-        if (progressValue > Double.greatestFiniteMagnitude || progressValue < -Double.greatestFiniteMagnitude) {
-            updatedProgress = 1
-            textValue = "∞"
+    func calculateData(_ progressValue: Double??) -> (text: String, value: Double) {
+        if let progressValue = progressValue, let progressValue = progressValue {
+            var updatedProgress: Double = 0
+            var textValue = ""
+            if (progressValue > Double.greatestFiniteMagnitude || progressValue < -Double.greatestFiniteMagnitude) {
+                updatedProgress = 1
+                textValue = "∞"
+            } else {
+                updatedProgress = progressValue
+                textValue = String(format: "%.0f", (progressValue * 100)) + "%"
+            }
+            print("A")
+            return (textValue, updatedProgress)
         } else {
-            updatedProgress = progressValue
-            textValue = String(format: "%.0f", (progressValue * 100)) + "%"
+            print("B")
+            return ("100%", 1)
         }
-        return (textValue, updatedProgress)
     }
     
 }

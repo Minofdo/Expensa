@@ -33,7 +33,7 @@ struct ContentView: View {
                     Task {
                         do {
                             isLoadingData = true
-                            try await userData.loadDataForUser(email)
+                            let _ = try await userData.loadDataForUser(email)
                             isLoadingData = false
                             userData.email = email
                         } catch {

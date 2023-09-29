@@ -31,18 +31,15 @@ class AddRecordViewModel: ObservableObject {
     }
     
     func saveIncome(_ email: String?, balance: Double) {
-        print("A")
         if (
             amount.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
             description.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
             location.trimmingCharacters(in: .whitespacesAndNewlines) == ""
         ) {
-            print("B")
             messageTitle = "INVALID DATA"
             messageBody = "Please fill all required fields.."
             showAlert = true
         } else if let amountDouble = Double(amount), let email = email {
-            print("C")
             if (amountDouble < 1) {
                 messageTitle = "INVALID DATA"
                 messageBody = "Please enter a valid amount."

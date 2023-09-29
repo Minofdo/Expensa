@@ -17,6 +17,7 @@ struct Categories {
     
     private(set) var categories: [Category]
     private(set) var categoryColor: Dictionary<String, Color>
+    private(set) var categoryLabel: Dictionary<String, String>
     
     init() {
         self.categories = [
@@ -30,6 +31,10 @@ struct Categories {
         categoryColor = [:]
         for cat in categories {
             categoryColor[cat.id] = cat.colour
+        }
+        categoryLabel = [:]
+        for cat in categories {
+            categoryLabel[cat.id] = cat.label
         }
     }
     

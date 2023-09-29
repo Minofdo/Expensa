@@ -18,18 +18,32 @@ struct DashboardView: View {
             VStack {
                 Text("Running Balance")
                     .padding(.top, 0)
-                HStack {
-                    Text("LKR")
-                    Text(String(format: "%.2f", userData.basicBudget?.balance ?? 0))
-                        .font(.system(size: 40))
-                        .fontWeight(.bold)
+                HStack(spacing:0) {
+                    Button {} label: {
+                        Image(systemName: "clock.arrow.circlepath")
+                    }
+                    .padding(.trailing, 2)
+                    .opacity(0)
+                    
+                    HStack {
+                        Text("LKR")
+                        Text(String(format: "%.2f", userData.basicBudget?.balance ?? 0))
+                            .font(.system(size: 40))
+                            .fontWeight(.bold)
+                    }
+                    .padding(.vertical, 10)
+                    .padding(.horizontal, 20)
+                    .background(Color.green.opacity(0.2))
+                    .cornerRadius(10)
+                    
+                    NavigationLink(destination: HistoryView()) {
+                        Image(systemName: "clock.arrow.circlepath")
+                    }
+                    .tint(.blue)
+                    .padding(.leading, 2)
                 }
-                .padding(.vertical, 10)
-                .padding(.horizontal, 20)
-                .background(Color.green.opacity(0.2))
-                .cornerRadius(10)
                 
-                Picker("I", selection: $dashViewModel.pickerOption) {
+                Picker("", selection: $dashViewModel.pickerOption) {
                     Text("Weekly")
                         .tag("W")
                     Text("Monthly")
@@ -38,6 +52,15 @@ struct DashboardView: View {
                 .pickerStyle(SegmentedPickerStyle())
                 .padding(.vertical, 2)
                 .padding(.horizontal, 10)
+                .onChange(of: dashViewModel.pickerOption, perform: { _ in
+                    Task {
+                        do {
+                            try await userData.loadExpenses()
+                        } catch {
+                            print(error)
+                        }
+                    }
+                })
                 
                 Divider()
             }
@@ -158,7 +181,7 @@ struct DashboardView: View {
                 dashViewModel.isLoadingData = true
                 Task {
                     do {
-                        try await userData.loadExpenses(dashViewModel.pickerOption)
+                        try await userData.loadExpenses()
                     } catch {
                         print(error)
                     }

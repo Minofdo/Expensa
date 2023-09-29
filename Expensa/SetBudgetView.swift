@@ -267,11 +267,14 @@ struct SetBudgetView: View {
                     Task {
                         budgetViewModel.isLoadingData = true
                         await budgetViewModel.saveBasicBudgetDetails(userData.email) { result in
-                            budgetViewModel.isLoadingData = false
-                            if (result) {
-                                dismiss()
-                            }
                         }
+                        do {
+                            try await userData.loadExpenses()
+                        } catch {
+                            print(error)
+                        }
+                        budgetViewModel.isLoadingData = false
+                        dismiss()
                     }
                 },
                 label: {
