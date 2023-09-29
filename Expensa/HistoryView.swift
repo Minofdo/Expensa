@@ -19,6 +19,9 @@ struct HistoryView: View {
     @State var expenseRecords: [Record] = []
     @State var incomeRecords: [Record] = []
     
+    @State var currentRecord: Record = Record(newBalance: 0, isExpense: false, amount: 0, recordDate: Date(), description: "", location: "", category: "")
+    @State var showDetailSheet = false
+    
     var catLabel = Categories().categoryLabel
     
     var body: some View {
@@ -113,6 +116,12 @@ struct HistoryView: View {
                             .frame(maxWidth: .infinity)
                             .background((historyType == "E") ? Color.red.opacity(0.1) : Color.green.opacity(0.1))
                             .background(Color(.quaternarySystemFill))
+                            .onTapGesture {
+                                DispatchQueue.main.async() {
+                                    self.currentRecord = visibleRecords[index]
+                                    self.showDetailSheet = true
+                                }
+                            }
                             .cornerRadius(10)
                             .padding(.horizontal, 10)
                             .padding(.top, 10)
@@ -126,6 +135,11 @@ struct HistoryView: View {
             }
         }.onAppear {
             searchHistory()
+        }
+        .sheet(isPresented: $showDetailSheet) {
+            RecordDetailView(record: $currentRecord)
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
         }
     }
     
