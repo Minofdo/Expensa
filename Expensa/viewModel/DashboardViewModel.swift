@@ -19,24 +19,23 @@ class DashboardViewModel: ObservableObject {
     
     @Published var categories = Categories().categories
     @Published var catColors = Categories().categoryColor
-    @Published var catValues: [String : Double?] = [:]
+    @Published var catValues: [String : Double] = [:]
     @AppStorage("homeBudgetMode") var pickerOption = "M"
     
     func calcExpensePercentage(_ userData: UserData) {
         for category in categories {
-            let targetValue = userData.basicBudget?.budgetForCategory[category.id]
-            let expenseValue = userData.basicBudget?.expenseForCategory[category.id]
-            if let targetValue = targetValue, let expenseValue = expenseValue {
-                if (expenseValue > targetValue) {
-                    catValues[category.id] = (((expenseValue - targetValue) / targetValue) * -1)
-                } else {
-                    catValues[category.id] = ((targetValue - expenseValue) / targetValue)
-                }
+            let targetValue = userData.basicBudget?.budgetForCategory[category.id] ?? 0
+            let expenseValue = userData.basicBudget?.expenseForCategory[category.id] ?? 0
+            print("targetValue")
+            print(targetValue)
+            if (targetValue == 0) {
+                catValues[category.id] = .infinity
+            } else if (expenseValue > targetValue) {
+                catValues[category.id] = (((expenseValue - targetValue) / targetValue) * -1)
             } else {
-                catValues[category.id] = nil
+                catValues[category.id] = ((targetValue - expenseValue) / targetValue)
             }
         }
-        print(catValues)
     }
     
 }

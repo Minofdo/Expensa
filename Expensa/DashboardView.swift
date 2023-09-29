@@ -53,11 +53,16 @@ struct DashboardView: View {
                 .padding(.vertical, 2)
                 .padding(.horizontal, 10)
                 .onChange(of: dashViewModel.pickerOption, perform: { _ in
+                    dashViewModel.isLoadingData = true
                     Task {
                         do {
                             try await userData.loadExpenses()
                         } catch {
                             print(error)
+                        }
+                        DispatchQueue.main.async {
+                            dashViewModel.calcExpensePercentage(userData)
+                            self.dashViewModel.isLoadingData = false
                         }
                     }
                 })

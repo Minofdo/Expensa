@@ -104,8 +104,8 @@ struct CircleProgressView: View {
         }
     }
     
-    func calculateData(_ progressValue: Double??) -> (text: String, value: Double) {
-        if let progressValue = progressValue, let progressValue = progressValue {
+    func calculateData(_ progressValue: Double?) -> (text: String, value: Double) {
+        if let progressValue = progressValue {
             var updatedProgress: Double = 0
             var textValue = ""
             if (progressValue > Double.greatestFiniteMagnitude || progressValue < -Double.greatestFiniteMagnitude) {
