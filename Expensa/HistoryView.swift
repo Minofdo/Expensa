@@ -15,6 +15,9 @@ struct HistoryView: View {
     @State var startDate = Date()
     @State var endDate = Date()
     
+    @State var totalExpense = 0.0
+    @State var totalIncome = 0.0
+    
     @State var visibleRecords: [Record] = []
     @State var expenseRecords: [Record] = []
     @State var incomeRecords: [Record] = []
@@ -78,6 +81,22 @@ struct HistoryView: View {
                                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                                 .padding(.top)
                                 .padding()
+                        } else if historyType == "E" {
+                            HStack {
+                                Text("Total Expense: ")
+                                Text(String(format: "%.2f", totalExpense))
+                                    .bold()
+                            }
+                            .padding(.top)
+                            .padding(.horizontal)
+                        } else {
+                            HStack {
+                                Text("Total Income: ")
+                                Text(String(format: "%.2f", totalIncome))
+                                    .bold()
+                            }
+                            .padding(.top)
+                            .padding(.horizontal)
                         }
                         
                         ForEach(0..<visibleRecords.count, id: \.self) { index in
@@ -124,7 +143,6 @@ struct HistoryView: View {
                             }
                             .cornerRadius(10)
                             .padding(.horizontal, 10)
-                            .padding(.top, 10)
                         }
                     }
                     .frame(minHeight: geometry.size.height, alignment: .top)
@@ -154,6 +172,14 @@ struct HistoryView: View {
                 visibleRecords = expenseRecords
             } else {
                 visibleRecords = incomeRecords
+            }
+            totalIncome = 0
+            totalExpense = 0
+            for record in expenseRecords {
+                totalExpense += record.amount
+            }
+            for record in incomeRecords {
+                totalIncome += record.amount
             }
         }
     }

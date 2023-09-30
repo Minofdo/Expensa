@@ -42,6 +42,9 @@ struct SetBudgetView: View {
                     }
                     Spacer()
                 }
+                .listRowInsets(EdgeInsets())
+                .padding()
+                .background(Color.green.opacity(0.3))
                 
                 Section(header: Text("Amount for budgeting"), content: {
                     HStack{
