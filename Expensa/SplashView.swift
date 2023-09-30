@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// loading screen to be displayed during the initial load
 struct SplashView: View {
     var body: some View {
         VStack {

@@ -17,6 +17,7 @@ struct ContentView: View {
     
     var body: some View {
         // https://roddy.io/2020/07/27/create-progressview-modal-in-swiftui/
+        // Conditionally switch views to control the flow of user
         NavigationView {
             if initialLoad {
                 SplashView()
@@ -29,8 +30,10 @@ struct ContentView: View {
                     )
             }
         }
+        // set environment object which will be accessed from other views
         .environmentObject(userData)
         .onAppear {
+            // check if user is logged-in
             authStateListenerHandle = Auth.auth().addStateDidChangeListener() { (_, user) in
                 if let email = user?.email {
                     Task {
@@ -43,6 +46,7 @@ struct ContentView: View {
                             print(error)
                             isLoadingData = false
                         }
+                        // delay thread to display splash screen for longer
                         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                             initialLoad = false
                         }

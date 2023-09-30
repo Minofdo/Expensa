@@ -19,6 +19,7 @@ struct Categories {
     private(set) var categoryColor: Dictionary<String, Color>
     private(set) var categoryLabel: Dictionary<String, String>
     
+    // iInitialise category data for future use
     init() {
         self.categories = [
             Category(id: "savings", label: "Savings", colour: .green),

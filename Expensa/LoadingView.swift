@@ -32,17 +32,6 @@ struct CircleProgressView: View {
     @EnvironmentObject var userData: UserData
     @State var categoryID: String
     
-    //    init(progressValue: Double, progressColor: Color) {
-    //        self.progressColor = progressColor
-    //        if (progressValue > Double.greatestFiniteMagnitude || progressValue < -Double.greatestFiniteMagnitude) {
-    //            self.progressValue = 1
-    //            self.textLabel = "∞"
-    //        } else {
-    //            self.progressValue = progressValue
-    //            self.textLabel = String(format: "%.0f", (progressValue * 100)) + "%"
-    //        }
-    //    }
-    
     var body: some View {
         let colour = dashViewModel.catColors[categoryID] ?? Color.gray
         let object = calculateData(dashViewModel.catValues[categoryID])
@@ -89,6 +78,7 @@ struct CircleProgressView: View {
         }.padding()
     }
     
+    // Calculate opacity depending on progress
     func calculateOpacity(_ value: Double) -> Double {
         let tempVal = abs(value)
         if (tempVal < 0.05) {
@@ -104,6 +94,7 @@ struct CircleProgressView: View {
         }
     }
     
+    // calculate percentage
     func calculateData(_ progressValue: Double?) -> (text: String, value: Double) {
         if let progressValue = progressValue {
             var updatedProgress: Double = 0

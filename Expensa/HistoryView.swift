@@ -161,6 +161,7 @@ struct HistoryView: View {
         }
     }
     
+    // filter search history for dates and calculate summary
     func searchHistory() {
         if let email = userData.email {
             let fireStore = FireStoreService(email)

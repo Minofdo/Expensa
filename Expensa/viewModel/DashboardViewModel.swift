@@ -22,6 +22,7 @@ class DashboardViewModel: ObservableObject {
     @Published var catValues: [String : Double] = [:]
     @AppStorage("homeBudgetMode") var pickerOption = "M"
     
+    // Calculate percentage for dashboard dials
     func calcExpensePercentage(_ userData: UserData) {
         for category in categories {
             let targetValue = userData.basicBudget?.budgetForCategory[category.id] ?? 0

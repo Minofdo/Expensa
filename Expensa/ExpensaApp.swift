@@ -8,6 +8,7 @@
 import SwiftUI
 import Firebase
 
+// Configure firebase
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
@@ -24,13 +25,14 @@ struct ExpensaApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+            // Create an set a delegate for firebase
                 .onAppear(perform: UIApplication.shared.addTapGestureRecognizer)
         }
     }
 }
 
 
-// HIDE KB extention - https://stackoverflow.com/a/63942065
+// HIDE K/B extention - https://stackoverflow.com/a/63942065
 extension UIApplication {
     func addTapGestureRecognizer() {
         guard let window = windows.first else { return }
@@ -44,6 +46,6 @@ extension UIApplication {
 
 extension UIApplication: UIGestureRecognizerDelegate {
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        return true // set to `false` if you don't want to detect tap during other gestures
+        return true 
     }
 }

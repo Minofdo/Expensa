@@ -17,6 +17,7 @@ class SetBudgetViewModel: ObservableObject {
     
     @Published var balance: Double = 0
     
+    // Control setter to filter out non numeric values
     @Published var initialAmount = "" {
         didSet {
             let filtered = initialAmount.filter { "0123456789".contains($0)}
@@ -124,6 +125,7 @@ class SetBudgetViewModel: ObservableObject {
         return formatter
     } ()
     
+    // Calculate balance to display remaining amount
     private func updateBalance() {
         balance = Double(initialAmount) ?? 0
         balance -= ((Double(savings) ?? 0) * ((savingsPeriod == "W") ? 4 : 1))
@@ -134,6 +136,7 @@ class SetBudgetViewModel: ObservableObject {
         balance -= ((Double(other) ?? 0) * ((otherPeriod == "W") ? 4 : 1))
     }
     
+    // Save data to firebase
     func saveBasicBudgetDetails(_ email: String?, _ isUpdate: Bool, completion: @escaping (Bool) -> Void) async {
         if let initialDouble = Double(initialAmount), let email = email {
             if (initialDouble < 1) {

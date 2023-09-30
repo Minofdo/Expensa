@@ -86,6 +86,7 @@ struct LoginView: View {
     }
 }
 
+// This is presented as a sheet
 struct LoginSheet: View {
     
     @EnvironmentObject var userData: UserData
@@ -143,6 +144,7 @@ struct LoginSheet: View {
                     if (loginViewModel.username == "") {
                         loginViewModel.usernameBorder = .red
                     } else {
+                        // validate email
                         let emailFormat = "[A-Z0-9a-z.-_]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,3}"
                         let emailPredicate = NSPredicate(format:"SELF MATCHES %@", emailFormat)
                         let valid = emailPredicate.evaluate(with: loginViewModel.username)
@@ -290,6 +292,7 @@ struct SignupSheet: View {
                     if (loginViewModel.username == "") {
                         loginViewModel.usernameBorder = .red
                     } else {
+                        // validate email
                         let emailFormat = "[A-Z0-9a-z.-_]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,3}"
                         let emailPredicate = NSPredicate(format:"SELF MATCHES %@", emailFormat)
                         let valid = emailPredicate.evaluate(with: loginViewModel.username)

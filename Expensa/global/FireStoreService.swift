@@ -26,6 +26,7 @@ class FireStoreService {
         return try await ref.child(emailKey).getData();
     }
     
+    // If update balance is not saved
     func saveBasicBudgetDetails(_ data: BasicBudget, _ isUpdate: Bool) async throws {
         let emailKey = makeEmailFireStoreSafe(email)
         if isUpdate {
@@ -54,6 +55,7 @@ class FireStoreService {
         }
     }
     
+    // save expense or income to the database
     func saveRecord(_ data: Record) async throws {
         let emailKey = makeEmailFireStoreSafe(email)
         let dateFormatter = DateFormatter()
@@ -90,6 +92,7 @@ class FireStoreService {
         }
     }
     
+    // load expenses for a given date
     func loadExpenseForDates(_ dates: [String], _ data: DataSnapshot?) -> [String:Double] {
         if let data = data {
             var collectedData: [String : Double] = [:]
@@ -177,6 +180,7 @@ class FireStoreService {
         return result
     }
     
+    // get date-key array for a given date for a week or month
     func getStartAndEndDates(for date: Date) -> [String] {
         let timeDifference = TimeZone.current.secondsFromGMT()
         var calendar = Calendar.current
@@ -202,6 +206,7 @@ class FireStoreService {
         return collectedDates
     }
     
+    // get date-key range for given dates
     func getDateCodesInRange(_ startDateIn: Date, _ endDateIn: Date) -> [String] {
         let timeDifference = TimeZone.current.secondsFromGMT()
         var calendar = Calendar.current

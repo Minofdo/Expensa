@@ -21,6 +21,7 @@ class AddRecordViewModel: ObservableObject {
     @Published var date = Date.now
     @Published var category = "savings"
     
+    // filter only numeric values
     @Published var amount = "" {
         didSet {
             let filtered = amount.filter { "0123456789".contains($0)}
@@ -30,6 +31,7 @@ class AddRecordViewModel: ObservableObject {
         }
     }
     
+    // Save income to firebase
     func saveIncome(_ email: String?, balance: Double) {
         if (
             amount.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
@@ -85,6 +87,7 @@ class AddRecordViewModel: ObservableObject {
         }
     }
     
+    // Save expense to firebase
     func saveExpense(_ email: String?, balance: Double) {
         if (
             amount.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||

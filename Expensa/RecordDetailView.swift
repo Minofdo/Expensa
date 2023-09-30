@@ -9,6 +9,7 @@ import SwiftUI
 
 struct RecordDetailView: View {
     
+    // Binding value which is to be passed from the parent view
     @Binding var record: Record
     
     var body: some View {

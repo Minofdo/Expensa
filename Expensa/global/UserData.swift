@@ -22,6 +22,7 @@ class UserData: ObservableObject {
     
     init() {}
     
+    // Load data for user email from firestore
     func loadDataForUser(_ email: String) async throws -> DataSnapshot {
         print("LOADING DATA")
         let fireStore = FireStoreService(email)
@@ -43,6 +44,7 @@ class UserData: ObservableObject {
         return data
     }
     
+    // load initial expenses for week or month
     func loadExpenses() async throws {
         guard let email else {
             return

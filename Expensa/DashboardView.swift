@@ -77,6 +77,7 @@ struct DashboardView: View {
             GeometryReader { geometry in
                 ScrollView(.vertical) {
                     VStack {
+                        // dynamically create and display dashboard gauges
                         let userBudget = userData.basicBudget
                         ForEach(0..<(dashViewModel.categories.count/2), id: \.self) { index in
                             let indexOne = (index*2)
@@ -140,6 +141,7 @@ struct DashboardView: View {
                 .navigationBarTitle("Dashboard", displayMode: .inline)
             }
             .toolbar {
+                // add buttons to navigation bar
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button {
                         dashViewModel.showLogout = true
@@ -174,6 +176,7 @@ struct DashboardView: View {
             }
             .onAppear {
                 print("DASHBOARD")
+                // show different welcome messages depending on user status
                 if (!userData.isGreetDisplayed) {
                     if (userData.isFirstLogin) {
                         dashViewModel.messageTitle = "Welcome"
