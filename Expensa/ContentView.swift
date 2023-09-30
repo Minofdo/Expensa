@@ -12,12 +12,15 @@ struct ContentView: View {
     
     @State var authStateListenerHandle: AuthStateDidChangeListenerHandle?
     @State var isLoadingData = false
+    @State var initialLoad = true
     @StateObject var userData = UserData()
     
     var body: some View {
         // https://roddy.io/2020/07/27/create-progressview-modal-in-swiftui/
         NavigationView {
-            if (userData.email != nil && userData.email?.trimmingCharacters(in: .whitespacesAndNewlines) != "") {
+            if initialLoad {
+                SplashView()
+            } else if (userData.email != nil && userData.email?.trimmingCharacters(in: .whitespacesAndNewlines) != "") {
                 DashboardView()
             } else {
                 LoginView()
@@ -40,9 +43,15 @@ struct ContentView: View {
                             print(error)
                             isLoadingData = false
                         }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            initialLoad = false
+                        }
                     }
                 } else {
                     userData.email = nil
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        initialLoad = false
+                    }
                 }
             }
         }

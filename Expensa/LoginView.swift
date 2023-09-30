@@ -157,20 +157,24 @@ struct LoginSheet: View {
                         loginViewModel.passwordBorder = .red
                     }
                     if (loginViewModel.usernameBorder != .red && loginViewModel.passwordBorder != .red) {
+                        loginViewModel.isLoadingData = true
                         Auth.auth().signIn(withEmail: loginViewModel.username, password: loginViewModel.password) { (_, error) in
-                            if let error = error {
-                                if (error._code == 17009 || error._code == 17011) {
-                                    loginViewModel.messageTitle = "ERROR"
-                                    loginViewModel.messageBody = "Username or Password is incorrect. Please try again."
-                                    loginViewModel.showAlert = true;
+                            DispatchQueue.main.async {
+                                loginViewModel.isLoadingData = false
+                                if let error = error {
+                                    if (error._code == 17009 || error._code == 17011) {
+                                        loginViewModel.messageTitle = "ERROR"
+                                        loginViewModel.messageBody = "Username or Password is incorrect. Please try again."
+                                        loginViewModel.showAlert = true;
+                                    } else {
+                                        loginViewModel.messageTitle = "ERROR"
+                                        loginViewModel.messageBody = error.localizedDescription
+                                        loginViewModel.showAlert = true;
+                                    }
                                 } else {
-                                    loginViewModel.messageTitle = "ERROR"
-                                    loginViewModel.messageBody = error.localizedDescription
-                                    loginViewModel.showAlert = true;
+                                    userData.isFirstLogin = false;
+                                    dismiss()
                                 }
-                            } else {
-                                userData.isFirstLogin = false;
-                                dismiss()
                             }
                         }
                     }
@@ -205,6 +209,7 @@ struct LoginSheet: View {
             .foregroundColor(.blue)
             .padding(.bottom, 5)
         }
+        .disabled(loginViewModel.isLoadingData)
     }
 }
 
@@ -304,20 +309,24 @@ struct SignupSheet: View {
                         loginViewModel.showAlert = true
                     }
                     if (loginViewModel.usernameBorder != .red && loginViewModel.passwordBorder != .red && loginViewModel.confirmPasswordBorder != .red) {
-                        Auth.auth().createUser(withEmail: loginViewModel.username, password: loginViewModel.password) { (_, error) in
-                            if let error = error {
-                                if (error._code == 17007) {
-                                    loginViewModel.messageTitle = "ERROR"
-                                    loginViewModel.messageBody = "Account already exist. Please login."
-                                    loginViewModel.showAlert = true;
+                        loginViewModel.isLoadingData = true
+                        DispatchQueue.main.async {
+                            Auth.auth().createUser(withEmail: loginViewModel.username, password: loginViewModel.password) { (_, error) in
+                                loginViewModel.isLoadingData = false
+                                if let error = error {
+                                    if (error._code == 17007) {
+                                        loginViewModel.messageTitle = "ERROR"
+                                        loginViewModel.messageBody = "Account already exist. Please login."
+                                        loginViewModel.showAlert = true;
+                                    } else {
+                                        loginViewModel.messageTitle = "ERROR"
+                                        loginViewModel.messageBody = error.localizedDescription
+                                        loginViewModel.showAlert = true;
+                                    }
                                 } else {
-                                    loginViewModel.messageTitle = "ERROR"
-                                    loginViewModel.messageBody = error.localizedDescription
-                                    loginViewModel.showAlert = true;
+                                    userData.isFirstLogin = true;
+                                    dismiss()
                                 }
-                            } else {
-                                userData.isFirstLogin = true;
-                                dismiss()
                             }
                         }
                     }
@@ -352,11 +361,6 @@ struct SignupSheet: View {
             .foregroundColor(.blue)
             .padding(.bottom, 5)
         }
-    }
-}
-
-struct LoginView_Previews: PreviewProvider {
-    static var previews: some View {
-        LoginView()
+        .disabled(loginViewModel.isLoadingData)
     }
 }

@@ -21,6 +21,7 @@ class LoginViewModel: ObservableObject {
     @Published var passwordBorder: Color = .gray
     @Published var confirmPasswordBorder: Color = .gray
     
+    @Published var isLoadingData = false
     @Published var showAlert = false
     @Published var messageBody = ""
     @Published var messageTitle = ""

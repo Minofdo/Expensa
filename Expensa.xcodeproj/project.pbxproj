@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		E60AF6642ABC8C5A00150739 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E60AF6632ABC8C5A00150739 /* LoginViewModel.swift */; };
 		E60AF66C2ABCDB8000150739 /* SetBudgetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E60AF66B2ABCDB8000150739 /* SetBudgetViewModel.swift */; };
+		E6620DC72AC827C2009914CF /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6620DC62AC827C2009914CF /* SplashView.swift */; };
 		E67CD9502AA9C56500F8BDCD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E67CD94F2AA9C56500F8BDCD /* GoogleService-Info.plist */; };
 		E6A6BF662AC6C716009DB4A2 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6A6BF652AC6C716009DB4A2 /* HistoryView.swift */; };
 		E6A6BF6A2AC7802C009DB4A2 /* RecordDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6A6BF692AC7802C009DB4A2 /* RecordDetailView.swift */; };
@@ -35,6 +36,7 @@
 /* Begin PBXFileReference section */
 		E60AF6632ABC8C5A00150739 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		E60AF66B2ABCDB8000150739 /* SetBudgetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetBudgetViewModel.swift; sourceTree = "<group>"; };
+		E6620DC62AC827C2009914CF /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
 		E67CD94F2AA9C56500F8BDCD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E6A6BF652AC6C716009DB4A2 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
 		E6A6BF692AC7802C009DB4A2 /* RecordDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordDetailView.swift; sourceTree = "<group>"; };
@@ -134,6 +136,7 @@
 				E6F67A4D2AC0AA2B00DBD774 /* AddRecordView.swift */,
 				E6A6BF652AC6C716009DB4A2 /* HistoryView.swift */,
 				E6A6BF692AC7802C009DB4A2 /* RecordDetailView.swift */,
+				E6620DC62AC827C2009914CF /* SplashView.swift */,
 			);
 			path = Expensa;
 			sourceTree = "<group>";
@@ -237,6 +240,7 @@
 				E6FD347C2AB743F1001E296D /* Category.swift in Sources */,
 				E6F67A502AC0C6D400DBD774 /* AddRecordViewModel.swift in Sources */,
 				E6DA09552AC02FDF0025822C /* FireStoreService.swift in Sources */,
+				E6620DC72AC827C2009914CF /* SplashView.swift in Sources */,
 				E6F67A4E2AC0AA2B00DBD774 /* AddRecordView.swift in Sources */,
 				E6A6BF6A2AC7802C009DB4A2 /* RecordDetailView.swift in Sources */,
 				E60AF66C2ABCDB8000150739 /* SetBudgetViewModel.swift in Sources */,
