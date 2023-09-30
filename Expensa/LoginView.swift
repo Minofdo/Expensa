@@ -156,6 +156,11 @@ struct LoginSheet: View {
                     if (loginViewModel.password == "") {
                         loginViewModel.passwordBorder = .red
                     }
+                    if (loginViewModel.username == "" || loginViewModel.password == "") {
+                        loginViewModel.messageTitle = "Fill Both Fields"
+                        loginViewModel.messageBody = "Please fill both fields with valid values."
+                        loginViewModel.showAlert = true
+                    }
                     if (loginViewModel.usernameBorder != .red && loginViewModel.passwordBorder != .red) {
                         loginViewModel.isLoadingData = true
                         Auth.auth().signIn(withEmail: loginViewModel.username, password: loginViewModel.password) { (_, error) in
@@ -300,6 +305,11 @@ struct SignupSheet: View {
                     }
                     if (loginViewModel.confirmPassword == "") {
                         loginViewModel.confirmPasswordBorder = .red
+                    }
+                    if (loginViewModel.username == "" || loginViewModel.password == "" || loginViewModel.confirmPassword == "") {
+                        loginViewModel.messageTitle = "Fill All Fields"
+                        loginViewModel.messageBody = "Please fill all fields with valid values."
+                        loginViewModel.showAlert = true
                     }
                     if (loginViewModel.password != "" && loginViewModel.password != loginViewModel.confirmPassword) {
                         loginViewModel.passwordBorder = .red
